@@ -3,7 +3,7 @@
 #include "ray.h"
 #include "field.h"
 #include <QPainterPath>
-
+#include <QDebug>
 abstract_optics::abstract_optics(field *backg)
 {
 	background = backg;
@@ -15,6 +15,7 @@ abstract_optics::~abstract_optics() {}
 
 position *abstract_optics::intersection_with_ray(ray *) const
 {
+	qDebug() << "abstract";
 	return 0;
 }
 

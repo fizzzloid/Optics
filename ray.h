@@ -2,8 +2,11 @@
 #define RAY_H
 
 #include "position.h"
+#include <QPainterPath>
+#include <QPen>
 class abstract_optics;
 class field;
+
 
 class ray
 {
@@ -25,7 +28,6 @@ class ray
 		ray *get_parent() const;
 		ray *get_child() const;
 
-		void set_parent(ray *r);
 		void set_child(ray *r);
 
 		field *get_field() const;
@@ -37,9 +39,23 @@ class ray
 		abstract_optics *get_generator() const;
 		void set_generator(abstract_optics *o);
 
+		QColor get_color() const;
+		QPen get_pen() const;
+		QBrush get_emitter_brush() const;
+		QPainterPath get_path() const;
+
+		void set_color(QColor c);
+		void set_pen(QPen p);
+		void set_emitter_brush(QBrush b);
+		void setup_colors();
+
 		const static qreal max_len = 1e3;
+		const static qreal min_brigh = 0.01;
+		const static qreal bright_step = 0.01;
 
 	private:
+		void generate_outline();
+
 		position emitter;
 		position dir_vector;
 		qreal direction;
@@ -53,6 +69,11 @@ class ray
 
 		abstract_optics *generator;
 		field *background;
+
+		QColor color;
+		QPen pen;
+		QBrush emitter_brush;
+		QPainterPath *path;
 };
 
 #endif // RAY_H

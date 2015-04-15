@@ -3,18 +3,20 @@
 #include "linses.h"
 #include <QPainter>
 #include <QtMath>
+#include <QDebug>
 
 field::field(QWidget *parent) : QWidget(parent)
 {
 	corner = QPointF(0,0);
 	scale_step = 0;
-	scale = 1.0;
+	scale = 1000.0;
 
-	background_color = Qt::white;
+	background_color = Qt::black;
 	rays_color = Qt::red;
 	background_brush = new QBrush(background_color, Qt::SolidPattern);
-	rays_pen = new QPen(rays_color, 2, Qt::SolidLine);
-	emitter_pen = new QPen(rays_color, 4);
+	rays_pen = new QPen(rays_color, 1.0, Qt::SolidLine);
+	emitter_pen = new QPen(rays_color, 0.0, Qt::SolidLine);
+	emitter_brush = new QBrush(rays_color, Qt::SolidPattern);
 }
 
 field::~field()
@@ -22,7 +24,7 @@ field::~field()
 	clear();
 }
 
-inline QList<ray *> field::get_rays() const
+QList<ray *> field::get_rays() const
 { return rays; }
 
 QList<abstract_optics *> field::get_optics() const
@@ -31,31 +33,23 @@ QList<abstract_optics *> field::get_optics() const
 void field::add_ray(ray *r)
 {
 	if (r && (rays.indexOf(r) == -1))
-	{
 		rays.append(r);
-		recalc();
-	}
 }
 
 void field::add_optic(abstract_optics *o)
 {
 	if (o && (optics.indexOf(o) == -1))
-	{
 		optics.append(o);
-		recalc();
-	}
 }
 
 void field::delete_ray(ray *r)
 {
 	rays.removeOne(r);
-	delete r;
 }
 
 void field::delete_optic(abstract_optics *o)
 {
 	optics.removeOne(o);
-	delete o;
 }
 
 void field::clear()
@@ -74,19 +68,29 @@ void field::clear()
 
 }
 
-void field::recalc()	// need to be optimized
+void field::recalc()
 {
-	ray *cur_ray = 0;
-	for (qint32 i = 0; i < rays.length(); i++)
+	qint32 l = rays.length();
+	for (qint32 i = 0; i < l; i++)
+		recalc_ray_on(i);
+}
+
+void field::recalc_ray_on(qint32 n)
+{
+	if (n >= rays.length()) return;
+
+	ray *cur_ray = rays[n];
+	while (cur_ray)
 	{
-		cur_ray = rays[i];
-		if (cur_ray->new_intersecting_object())
+
+		if (cur_ray->new_intersecting_object()
+			&& cur_ray->get_intersection_object())
 		{
-			cur_ray->set_child(0);
-			ray *new_ray = cur_ray->get_intersection_object()
-					->generate_ray(cur_ray);
-			add_ray(new_ray);
+			abstract_optics *int_opt =
+					cur_ray->get_intersection_object();
+			int_opt->generate_ray(cur_ray);
 		}
+		cur_ray = cur_ray->get_child();
 	}
 }
 
@@ -99,48 +103,45 @@ void field::paintEvent(QPaintEvent *)
 	painter.translate(corner.x(), corner.y() + height());
 	painter.scale(scale, -scale);
 
-	// optics
-	quint32 l = optics.length();
-	for (quint32 i = 0; i < l; i++)
-	{
-		abstract_optics *cur_opt = optics[i];
-		painter.setPen(cur_opt->get_pen());
-		painter.setBrush(cur_opt->get_brush());
-		painter.drawPath(cur_opt->get_outline());
-	}
-
 	// rays
-	l = rays.length();
-	for (quint32 i = 0; i < l; i++)
+	qint32 l = rays.length();
+	qint32 i = 0;
+	bool f = i < l;
+	ray *cur_ray;
+	if (f) cur_ray = rays[i];
+	while (f)
 	{
-		ray *cur_ray = rays[i];
+		QPen r_pen = cur_ray->get_pen();
+		r_pen.setWidthF(r_pen.widthF()/scale);
+		painter.setPen(r_pen);
+		painter.setBrush(cur_ray->get_emitter_brush());
+		painter.drawPath(cur_ray->get_path());
 
-		QPointF ray_start = cur_ray->get_emitter_pos();
-		ray_start += corner;
-
-		QPointF ray_end;
-		if (cur_ray->get_intersection_point())
-			ray_end = *(cur_ray->get_intersection_point());
+		if (cur_ray->get_child()) cur_ray = cur_ray->get_child();
 		else
 		{
-			ray_end = QPointF(qCos(cur_ray->get_direction()),
-							  qSin(cur_ray->get_direction()));
-			ray_end *= ray::max_len;
-			ray_end += cur_ray->get_emitter_pos();
+			f = ++i < l;
+			if (f) cur_ray = rays[i];
 		}
-		ray_end += corner;
+	}
 
-		painter.setPen(*emitter_pen);
-		painter.drawPoint(ray_start);
-		painter.setPen(*rays_pen);
-		painter.drawLine(ray_start, ray_end);
+	// optics
+	l = optics.length();
+	for (qint32 i = 0; i < l; i++)
+	{
+		abstract_optics *cur_opt = optics[i];
+		QPen o_pen = cur_opt->get_pen();
+		o_pen.setWidthF(o_pen.widthF()/scale);
+		painter.setPen(o_pen);
+		painter.setBrush(cur_opt->get_brush());
+		painter.drawPath(cur_opt->get_outline());
 	}
 }
 
 void field::scale_change(qint32 sc_st)
 {
 	scale_step = sc_st;
-	scale = qPow(scale_base, (qreal) sc_st);
+	scale = 1000*qPow(scale_base, (qreal) sc_st);
 }
 
 void field::corner_change(qreal x, qreal y)
@@ -151,7 +152,7 @@ void field::corner_change(qreal x, qreal y)
 
 void field::scale_turn(qint32 increment)
 {
-	scale += increment;
+	scale_change(scale_step + increment);
 }
 
 void field::corner_turn(qreal incx, qreal incy)

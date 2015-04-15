@@ -3,18 +3,22 @@
 
 position::position(qreal xpos, qreal ypos) : QPointF(xpos, ypos) {}
 
-qreal position::scalar_mult(position p)
+qreal position::scalar_mult(position p) const
 {
-	return ( x()*p.x() + y() * p.y() ) / mm_in_m / mm_in_m;
+	return ( x()*p.x() + y() * p.y() );
 }
 
 
 qreal position::length() const
-{ return qSqrt( x()*x() + y() * y() ) / mm_in_m; }
+{ return qSqrt( x()*x() + y() * y() ); }
+
+qreal position::vect_mult(position p) const
+{
+	return ( x()*p.y() - y()*p.x() );
+}
 
 qreal position::distance(position p) const
 {
-	position l = *this;
-	l-=p;
-	return l.length();
+	p -= *this;
+	return p.length();
 }

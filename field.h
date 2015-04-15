@@ -26,13 +26,15 @@ class field : public QWidget
 
 		void clear();
 
-	public slots:
 		void recalc();
-		void paintEvent(QPaintEvent *);
+		void recalc_ray_on(qint32 n);
 		void scale_change(qint32 sc_st);
 		void corner_change(qreal x, qreal y);
 		void scale_turn(qint32 increment);
 		void corner_turn(qreal incx, qreal incy);
+
+	public slots:
+		void paintEvent(QPaintEvent *);
 
 	private:
 		QList<ray *> rays;
@@ -45,6 +47,7 @@ class field : public QWidget
 		QColor rays_color;
 		QPen *rays_pen;
 		QPen *emitter_pen;
+		QBrush *emitter_brush;
 		QBrush *background_brush;
 
 		static const qreal scale_base = 1.3;

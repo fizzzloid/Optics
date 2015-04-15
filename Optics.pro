@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     position.cpp \
     field.cpp \
     abstractoptics.cpp \
-    thin_linse.cpp
+    thin_linse.cpp \
+    mirror.cpp
 
 HEADERS  += mainwindow.h \
     ray.h \
@@ -27,4 +28,5 @@ HEADERS  += mainwindow.h \
     field.h \
     thin_linse.h \
     optics.h \
-    linses.h
+    linses.h \
+    mirror.h
