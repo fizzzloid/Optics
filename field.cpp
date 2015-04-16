@@ -11,6 +11,8 @@ field::field(QWidget *parent) : QWidget(parent)
 	scale_step = 0;
 	scale = 1000.0;
 
+	index_of_refr = 1.0;
+
 	background_color = Qt::black;
 	rays_color = Qt::red;
 	background_brush = new QBrush(background_color, Qt::SolidPattern);
@@ -167,4 +169,15 @@ void field::corner_turn(qreal incx, qreal incy)
 {
 	corner.setX(corner.x() + incx);
 	corner.setY(corner.y() + incy);
+}
+
+void field::get_index_of_refraction() const
+{
+	return index_of_refr;
+}
+
+qreal field::set_index_of_refraction(qreal i)
+{
+	index_of_refr = i;
+	recalc();
 }

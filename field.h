@@ -33,6 +33,9 @@ class field : public QWidget
 		void scale_turn(qint32 increment);
 		void corner_turn(qreal incx, qreal incy);
 
+		void set_index_of_refraction(qreal i);
+		qreal get_index_of_refraction() const;
+
 	public slots:
 		void paintEvent(QPaintEvent *);
 
@@ -49,6 +52,7 @@ class field : public QWidget
 		QPen *emitter_pen;
 		QBrush *emitter_brush;
 		QBrush *background_brush;
+		qreal index_of_refr;
 
 		static const qreal scale_base = 1.3;
 };

@@ -43,5 +43,19 @@ ray *prism::generate_ray(ray *r)
 	if (r->get_intersection_object() != this) return 0;
 	position cross = *r->get_intersection_point();
 
+	qint32 l = polygon.length();
+	qreal min_dist = INFINITY;
+	qint32 cross_num = 0;
+	for (qint32 i = 0; i < l; i++)
+	{
+		qreal dist = common_functions
+				::qist_to_stratch(polygon[i], polygon[(i+1)%l], cross);
+		if (dist < min_dist)
+		{
+			cross_num = i;
+			min_dist = dist;
+		}
+	}
 
+	// todo
 }
