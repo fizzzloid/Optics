@@ -54,6 +54,7 @@ ray::ray(qreal xpos, qreal ypos, position dir_v, field *f, qreal intens)
 
 ray::~ray()
 {
+	if (path) delete path;
 	if (child) delete child;
 	if (parent && (parent->child == this)) parent->child = 0;
 	if (generator) generator->delete_ray(this);
@@ -207,6 +208,7 @@ void ray::setup_colors()
 
 void ray::generate_outline()
 {
+	if (path) delete path;
 	path = new QPainterPath;
 	//path->addEllipse(emitter, 2.0, 2.0);
 	path->moveTo(emitter);

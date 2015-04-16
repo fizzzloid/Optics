@@ -10,14 +10,12 @@ MainWindow::MainWindow(QWidget *parent)
 
 	setMinimumSize(400,200);
 
-	qreal angle = 0.2;
-	new ray(0.05, 0.060, angle, mainfield);
-	new ray(0.05, 0.085, angle, mainfield);
-	new ray(0.05, 0.100, angle, mainfield);
-	new ray(0.04, 0.060, -angle, mainfield);
-	new ray(0.04, 0.085, -angle, mainfield);
-	new ray(0.04, 0.100, -angle, mainfield);
-	for (qreal x = 0.06; x < 1.0; x += 0.05)
-	 new thin_linse(position(x, 0.05), position(x, 0.12), 10.0, mainfield);
+	new ray(0.30, 0.05, 0.002, mainfield);
+	new mirror(position(0.50, 0.05), position(0.50, 0.15),
+			   true, mainfield);
+	new mirror(position(0.10, 0.05), position(0.10, 0.15),
+			   false, mainfield);
+
+
 	mainfield->recalc();
 }

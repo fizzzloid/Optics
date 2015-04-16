@@ -2,6 +2,8 @@
 #include <QtMath>
 
 position::position(qreal xpos, qreal ypos) : QPointF(xpos, ypos) {}
+position::position(QPointF p) : QPointF(p) {}
+
 
 qreal position::scalar_mult(position p) const
 {

@@ -18,12 +18,12 @@ thin_linse::thin_linse(position start, position end,
 	center /= 2.0;
 	radius = edge_a.distance(edge_b) / 2.0;
 
-	position t(edge_a);
-	t -= edge_b;
-	t /= 2 * radius;
+	tangent.setX(edge_a.x() - edge_b.x());
+	tangent.setY(edge_a.y() - edge_b.y());
+	tangent /= 2 * radius;
 
-	normal.setX(-t.y());
-	normal.setY(t.x());
+	normal.setX(-tangent.y());
+	normal.setY(tangent.x());
 	angle = qAsin(normal.y() / normal.length());
 	D = dioptr;
 
@@ -151,9 +151,6 @@ void thin_linse::generate_outline()
 	qreal k;
 	if (D >= 0.0 ) k = radius * 0.1;
 	else k = -radius * 0.1;
-	position tangent(edge_a);
-	tangent -= edge_b;
-	tangent /= 2 * radius;
 
 	position whisker_a1(tangent);
 	whisker_a1 += normal;

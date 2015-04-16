@@ -17,7 +17,7 @@ class thin_linse : public abstract_optics
 		void setup_pen_and_bruh();
 
 	private:
-		position edge_a, edge_b, center, normal;
+		position edge_a, edge_b, center, normal, tangent;
 		qreal D, radius, angle;
 
 		void generate_outline();
