@@ -14,5 +14,11 @@ MainWindow::MainWindow(QWidget *parent)
 	new thin_linse(position(0.3, 0.01), position(0.3, 0.20), 10, mainfield);
 	new mirror(position(0.05, 0.05), position(0.05, 0.25), false, mainfield);
 	new mirror(position(0.05, 0.25), position(0.25, 0.25), false, mainfield);
+	new mirror(position(0,0), position(0.80,0), true, mainfield);
+	new wall(position(0.5, 0.5), position(1.0,0.5), mainfield);
+	new wall(position(0.0, 0.6), position(1.0,0.6), mainfield);
+
 	mainfield->recalc();
+	mainfield->scale_turn(-2);
+	mainfield->corner_turn(-0.1, -0.1);
 }

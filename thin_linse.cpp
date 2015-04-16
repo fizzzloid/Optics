@@ -3,7 +3,7 @@
 #include "field.h"
 #include <QtMath>
 #include <QPainter>
-#include <QDebug>
+#include <common_functions.h>
 
 thin_linse::thin_linse(position start, position end,
 					   qreal dioptr, field *backg) : abstract_optics(backg)
@@ -58,41 +58,7 @@ thin_linse::~thin_linse() {}
 
 position *thin_linse::intersection_with_ray(ray *r) const
 {
-	position e = r->get_emitter_pos();
-	position d = r->get_direction_vect();
-
-	qreal Dx = edge_b.x() - edge_a.x();
-	qreal Dy = edge_b.y() - edge_a.y();
-
-	qreal denominator = d.x() * Dy - d.y() * Dx;
-
-	if (denominator == 0.0) return 0;	// if ray is parallel to rhe linse
-
-	qreal t = (e.y() - edge_a.y()) * Dx - (e.x() - edge_a.x()) * Dy;
-	t /= denominator;
-
-	if (t < 0.00001) return 0; // if ray is starting from the linse
-							   // or after linse
-
-	position cross;
-	cross.setX(e.x() + d.x() * t);
-	cross.setY(e.y() + d.y() * t);
-
-	// if cross is on the same line with the linse,
-	// but not between edge_a and edge_b - return 0
-	if (Dx != 0.0)
-	{
-		qreal t1 = ( edge_b.x() - cross.x() ) / Dx;
-		if ((t1 < 0.0) || (1.0 < t1)) return 0;
-	}
-	else if (Dy != 0.0)
-	{
-		qreal t1 = ( edge_b.y() - cross.y() ) / Dy;
-		if ((t1 < 0.0) || (1.0 < t1)) return 0;
-	}
-	else return 0;
-
-	return new position(cross);
+	return common_functions::stretch_intersection(edge_a, edge_b, r);
 }
 
 ray *thin_linse::generate_ray(ray *r)
@@ -130,9 +96,7 @@ ray *thin_linse::generate_ray(ray *r)
 	r->set_child(new_ray);
 	generated_rays.append(new_ray);
 
-/*	qDebug() << "Ray generated (" << cross.x() << ", " << cross.y()
-			 << "; " << angle+betta << ")";
-*/	return new_ray;
+	return new_ray;
 }
 
 void thin_linse::setup_pen_and_bruh()
