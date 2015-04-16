@@ -100,7 +100,7 @@ void field::paintEvent(QPaintEvent *)
 	painter.setRenderHint(QPainter::Antialiasing, true);
 	painter.fillRect(0, 0, width(), height(), *background_brush);
 
-	painter.translate(corner.x(), corner.y() + height());
+	painter.translate(-corner.x()*scale, corner.y()*scale + height());
 	painter.scale(scale, -scale);
 
 	// rays
@@ -165,6 +165,6 @@ void field::scale_turn(qint32 increment)
 
 void field::corner_turn(qreal incx, qreal incy)
 {
-	corner.rx() += incx;
-	corner.ry() += incy;
+	corner.setX(corner.x() + incx);
+	corner.setY(corner.y() + incy);
 }
