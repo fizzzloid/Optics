@@ -1,15 +1,15 @@
-#ifndef THIN_LINSE_H
-#define THIN_LINSE_H
+#ifndef THIN_lense_H
+#define THIN_lense_H
 
 #include <abstractoptics.h>
 #include <position.h>
-class thin_linse : public abstract_optics
+class thin_lense : public abstract_optics
 {
 	public:
-		thin_linse(position start, position end, qreal dioptr, field *backg);
-		thin_linse(position cntr, position norm, qreal radius,
+		thin_lense(position start, position end, qreal dioptr, field *backg);
+		thin_lense(position cntr, position norm, qreal radius,
 				qreal dioptr, field *backg);
-		~thin_linse();
+		~thin_lense();
 
 		position *intersection_with_ray(ray *r) const;
 		ray *generate_ray(ray *r);
@@ -23,4 +23,4 @@ class thin_linse : public abstract_optics
 		void generate_outline();
 };
 
-#endif // THIN_LINSE_H
+#endif // THIN_lense_H

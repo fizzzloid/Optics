@@ -1,11 +1,11 @@
-#include "thin_linse.h"
+#include "thin_lense.h"
 #include "ray.h"
 #include "field.h"
 #include <QtMath>
 #include <QPainter>
 #include <common_functions.h>
 
-thin_linse::thin_linse(position start, position end,
+thin_lense::thin_lense(position start, position end,
 					   qreal dioptr, field *backg) : abstract_optics(backg)
 {
 	edge_a.setX(start.x());
@@ -31,7 +31,7 @@ thin_linse::thin_linse(position start, position end,
 	generate_outline();
 }
 
-thin_linse::thin_linse(position cntr, position norm, qreal r,
+thin_lense::thin_lense(position cntr, position norm, qreal r,
 					   qreal dioptr, field *backg) : abstract_optics(backg)
 {
 	center.setX(cntr.x());
@@ -54,14 +54,14 @@ thin_linse::thin_linse(position cntr, position norm, qreal r,
 	generate_outline();
 }
 
-thin_linse::~thin_linse() {}
+thin_lense::~thin_lense() {}
 
-position *thin_linse::intersection_with_ray(ray *r) const
+position *thin_lense::intersection_with_ray(ray *r) const
 {
 	return common_functions::stretch_intersection(edge_a, edge_b, r);
 }
 
-ray *thin_linse::generate_ray(ray *r)
+ray *thin_lense::generate_ray(ray *r)
 {
 	if (r->get_intensity() < ray::min_brigh) return 0;
 	if (r->get_intersection_object() != this) return 0;
@@ -99,7 +99,7 @@ ray *thin_linse::generate_ray(ray *r)
 	return new_ray;
 }
 
-void thin_linse::setup_pen_and_bruh()
+void thin_lense::setup_pen_and_bruh()
 {
 	pen.setColor(Qt::blue);
 	pen.setWidth(2);
@@ -111,7 +111,7 @@ void thin_linse::setup_pen_and_bruh()
 	brush.setStyle(Qt::SolidPattern);
 }
 
-void thin_linse::generate_outline()
+void thin_lense::generate_outline()
 {
 	outline.moveTo(edge_a);
 	outline.lineTo(edge_b);

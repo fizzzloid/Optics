@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
 	setMinimumSize(400,200);
 
 	new ray(0.60, 0.05, 3.1415, mainfield);
-	new thin_linse(position(0.3, 0.01), position(0.3, 0.20), 10, mainfield);
+	new thin_lense(position(0.3, 0.01), position(0.3, 0.20), 10, mainfield);
 	new mirror(position(0.05, 0.05), position(0.05, 0.25), false, mainfield);
 	new mirror(position(0.05, 0.25), position(0.25, 0.25), false, mainfield);
 	new mirror(position(0,0), position(0.80,0), true, mainfield);

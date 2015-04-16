@@ -18,19 +18,21 @@ SOURCES += main.cpp\
     position.cpp \
     field.cpp \
     abstractoptics.cpp \
-    thin_linse.cpp \
 	mirror.cpp \
     wall.cpp \
-    common_functions.cpp
+    common_functions.cpp \
+    prism.cpp \
+    thin_lense.cpp
 
 HEADERS  += mainwindow.h \
     ray.h \
     position.h \
     abstractoptics.h \
     field.h \
-    thin_linse.h \
     optics.h \
-    linses.h \
 	mirror.h \
     wall.h \
-    common_functions.h
+    common_functions.h \
+    prism.h \
+    thin_lense.h \
+    lenses.h

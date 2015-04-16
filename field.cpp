@@ -1,6 +1,6 @@
 #include "field.h"
 #include "ray.h"
-#include "linses.h"
+#include "lenses.h"
 #include <QPainter>
 #include <QtMath>
 #include <QDebug>

@@ -4,7 +4,7 @@
 #include "field.h"
 #include "position.h"
 #include "ray.h"
-#include "linses.h"
+#include "lenses.h"
 
 #endif // OPTICS_H
 

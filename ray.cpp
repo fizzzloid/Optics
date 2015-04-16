@@ -1,5 +1,5 @@
 #include "ray.h"
-#include "linses.h"
+#include "lenses.h"
 #include "field.h"
 #include <QList>
 #include <QtMath>
