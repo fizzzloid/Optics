@@ -49,6 +49,16 @@ QPen abstract_optics::get_pen() const
 	return pen;
 }
 
-void abstract_optics::setup_pen_and_bruh() {}
+void abstract_optics::setup_pen_and_bruh()
+{
+	pen.setColor(Qt::blue);
+	pen.setWidth(2);
+	pen.setStyle(Qt::SolidLine);
+
+	QColor brush_color(Qt::darkBlue);
+	brush_color.setAlphaF(0.7);
+	brush.setColor(brush_color);
+	brush.setStyle(Qt::SolidPattern);
+}
 
 void abstract_optics::generate_outline() {}

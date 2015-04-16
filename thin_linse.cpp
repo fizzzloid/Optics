@@ -123,6 +123,10 @@ ray *thin_linse::generate_ray(ray *r)
 
 	ray *new_ray = new ray(cross.x(), cross.y(), betta + angle,
 						   background, r->get_intensity() - ray::bright_step);
+	if ( normal.scalar_mult(d)
+		*normal.scalar_mult(new_ray->get_direction_vect()) < 0)
+			new_ray->set_direction(M_PI - betta);
+
 	r->set_child(new_ray);
 	generated_rays.append(new_ray);
 

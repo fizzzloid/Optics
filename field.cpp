@@ -15,7 +15,7 @@ field::field(QWidget *parent) : QWidget(parent)
 	rays_color = Qt::red;
 	background_brush = new QBrush(background_color, Qt::SolidPattern);
 	rays_pen = new QPen(rays_color, 1.0, Qt::SolidLine);
-	emitter_pen = new QPen(rays_color, 0.0, Qt::SolidLine);
+	emitter_pen = new QPen(rays_color, 2.0, Qt::SolidLine);
 	emitter_brush = new QBrush(rays_color, Qt::SolidPattern);
 }
 
@@ -111,10 +111,18 @@ void field::paintEvent(QPaintEvent *)
 	if (f) cur_ray = rays[i];
 	while (f)
 	{
+		if (!cur_ray->get_parent())
+		{
+			QPen e_pen = cur_ray->get_emitter_pen();
+			qreal r = cur_ray->get_emitter_radius() / scale;
+			e_pen.setWidthF(e_pen.widthF()/scale);
+			painter.setBrush(cur_ray->get_emitter_brush());
+			painter.setPen(e_pen);
+			painter.drawEllipse(cur_ray->get_emitter_pos(),r, r);
+		}
 		QPen r_pen = cur_ray->get_pen();
 		r_pen.setWidthF(r_pen.widthF()/scale);
 		painter.setPen(r_pen);
-		painter.setBrush(cur_ray->get_emitter_brush());
 		painter.drawPath(cur_ray->get_path());
 
 		if (cur_ray->get_child()) cur_ray = cur_ray->get_child();

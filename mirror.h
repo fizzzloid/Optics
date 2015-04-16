@@ -13,7 +13,7 @@ class mirror : public abstract_optics
 		position *intersection_with_ray(ray *r) const;
 		ray *generate_ray(ray *r);
 
-		void setup_pen_and_bruh();
+		static const quint32 hatch_count = 15;
 
 	private:
 		position edge_a, edge_b, normal, tangent;

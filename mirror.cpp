@@ -90,28 +90,18 @@ ray *mirror::generate_ray(ray *r)
 	return new_ray;
 }
 
-void mirror::setup_pen_and_bruh()
-{
-	pen.setColor(Qt::blue);
-	pen.setWidth(2);
-	pen.setStyle(Qt::SolidLine);
-
-	brush.setColor(Qt::darkBlue);
-	brush.setStyle(Qt::BDiagPattern);
-}
-
 void mirror::generate_outline()
 {
 	outline.moveTo(edge_a);
 	outline.lineTo(edge_b);
 
-	position add_vect = tangent + normal;
+	position add_vect =  -normal - tangent;
 	add_vect /= add_vect.length();
-	add_vect *= - 0.1 * length;
+	add_vect *= - length / hatch_count;
 
-	for (qint32 i = 1; i <= 10; i++)
+	for (quint32 i = 0; i < hatch_count; i++)
 	{
-		position st_pos(edge_a + 0.1*i*tangent);
+		position st_pos(edge_b + i*tangent * length / hatch_count);
 		outline.moveTo(st_pos);
 		outline.lineTo(st_pos + add_vect);
 	}

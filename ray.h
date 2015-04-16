@@ -41,13 +41,17 @@ class ray
 
 		QColor get_color() const;
 		QPen get_pen() const;
+		QPen get_emitter_pen() const;
 		QBrush get_emitter_brush() const;
 		QPainterPath get_path() const;
+		qreal get_emitter_radius() const;
 
 		void set_color(QColor c);
 		void set_pen(QPen p);
 		void set_emitter_brush(QBrush b);
+		void set_emitter_pen(QPen p);
 		void setup_colors();
+		void set_emitter_radius(qreal r);
 
 		const static qreal max_len = 1e3;
 		const static qreal min_brigh = 0.01;
@@ -72,8 +76,10 @@ class ray
 
 		QColor color;
 		QPen pen;
+		QPen emitter_pen;
 		QBrush emitter_brush;
 		QPainterPath *path;
+		qreal emitter_radius;
 };
 
 #endif // RAY_H

@@ -3,15 +3,12 @@
 #include "field.h"
 #include <QList>
 #include <QtMath>
+#include <QDebug>
 
 ray::ray(qreal xpos, qreal ypos, qreal dir, field *f, qreal intens)
 {	
 	emitter.setX(xpos);
 	emitter.setY(ypos);
-	direction = dir;
-	intensity = intens;
-	dir_vector.setX(qCos(dir));
-	dir_vector.setY(qSin(dir));
 
 	parent = 0;
 	child = 0;
@@ -20,33 +17,29 @@ ray::ray(qreal xpos, qreal ypos, qreal dir, field *f, qreal intens)
 	generator = 0;
 
 	path = 0;
+	set_intensity(intens);
 	setup_colors();
-	generate_outline();
+	set_direction(dir);
 
 	background = f;
 	background->add_ray(this);
 }
 
-ray::ray(qreal xpos, qreal ypos, position dir_v, field *f, qreal intens)
+ray::ray(qreal xpos, qreal ypos, position dir_vect, field *f, qreal intens)
 {
 	emitter.setX(xpos);
 	emitter.setY(ypos);
-	intensity = intens;
-	dir_vector.setX(dir_v.x());
-	dir_vector.setY(dir_v.y());
-	dir_vector /= dir_vector.length();
-	direction = qAtan(dir_v.y() / dir_v.x());
-	if (dir_v.x() < 0) direction += M_PI;
 
+	path = 0;
 	parent = 0;
 	child = 0;
 	intersection_object = 0;
 	intersection_point = 0;
 	generator = 0;
 
-	path = 0;
+	set_intensity(intens);
 	setup_colors();
-	generate_outline();
+	set_direction_vect(dir_vect);
 
 	background = f;
 	background->add_ray(this);
@@ -78,12 +71,21 @@ void ray::set_emitter_pos(position emitter_pos)
 { emitter = emitter_pos; }
 
 void ray::set_direction(qreal dir)
-{ direction = dir; }
+{
+	direction = dir;
+	dir_vector.setX(qCos(dir));
+	dir_vector.setY(qSin(dir));
+	generate_outline();
+}
 
 void ray::set_direction_vect(position dir_vect)
 {
 	dir_vector.setX(dir_vect.x());
 	dir_vector.setY(dir_vect.y());
+	dir_vector /= dir_vector.length();
+	direction = qAtan(dir_vect.y() / dir_vect.x());
+	if (dir_vect.x() < 0) direction += M_PI;
+	generate_outline();
 }
 
  void ray::set_intensity(qreal intens)
@@ -170,6 +172,11 @@ QPen ray::get_pen() const
 	return pen;
 }
 
+QPen ray::get_emitter_pen() const
+{
+	return emitter_pen;
+}
+
 QBrush ray::get_emitter_brush() const
 {
 	return emitter_brush;
@@ -190,9 +197,19 @@ void ray::set_emitter_brush(QBrush b)
 	emitter_brush = b;
 }
 
+void ray::set_emitter_pen(QPen p)
+{
+	emitter_pen = p;
+}
+
 QPainterPath ray::get_path() const
 {
 	return *path;
+}
+
+qreal ray::get_emitter_radius() const
+{
+	return emitter_radius;
 }
 
 void ray::setup_colors()
@@ -202,15 +219,22 @@ void ray::setup_colors()
 	pen.setColor(color);
 	pen.setWidthF(0.0);
 	pen.setStyle(Qt::SolidLine);
+	emitter_pen.setColor(color);
+	emitter_pen.setWidthF(1.0);
 	emitter_brush.setColor(color);
 	emitter_brush.setStyle(Qt::SolidPattern);
+	set_emitter_radius(3.0);
+}
+
+void ray::set_emitter_radius(qreal r)
+{
+	emitter_radius = r;
 }
 
 void ray::generate_outline()
 {
 	if (path) delete path;
 	path = new QPainterPath;
-	//path->addEllipse(emitter, 2.0, 2.0);
 	path->moveTo(emitter);
 	if (intersection_point) path->lineTo(*intersection_point);
 	else
