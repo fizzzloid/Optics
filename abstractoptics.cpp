@@ -56,7 +56,7 @@ void abstract_optics::setup_pen_and_bruh()
 	pen.setStyle(Qt::SolidLine);
 
 	QColor brush_color(Qt::darkBlue);
-	brush_color.setAlphaF(0.7);
+	brush_color.setAlphaF(0.3);
 	brush.setColor(brush_color);
 	brush.setStyle(Qt::SolidPattern);
 }

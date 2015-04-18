@@ -17,6 +17,7 @@ class prism : public abstract_optics
 		ray *generate_ray(ray *r);
 
 	private:
+		void calculate_geometry();
 		void generate_outline();
 		QPolygonF polygon;
 		QList<position> tangent;
