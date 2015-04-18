@@ -2,7 +2,7 @@
 #define PRISM_H
 
 #include "abstractoptics.h"
-#include "position.h"
+#include "vector2D.h"
 #include <QList>
 #include <QPolygonF>
 class field;
@@ -13,15 +13,15 @@ class prism : public abstract_optics
 		prism(QPolygonF p, qreal index_of_refraction, field *back);
 		~prism();
 
-		position *intersection_with_ray(ray *r) const;
+		vector2D *intersection_with_ray(ray *r) const;
 		ray *generate_ray(ray *r);
 
 	private:
 		void calculate_geometry();
 		void generate_outline();
 		QPolygonF polygon;
-		QList<position> tangent;
-		QList<position> normal;
+		QList<vector2D> tangent;
+		QList<vector2D> normal;
 		qreal index_of_refr;
 };
 

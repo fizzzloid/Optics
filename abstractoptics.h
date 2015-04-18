@@ -5,7 +5,7 @@
 #include <QPainterPath>
 #include <QPen>
 #include <QBrush>
-class position;
+class vector2D;
 class ray;
 class field;
 
@@ -15,11 +15,9 @@ class abstract_optics
 		abstract_optics(field *backg);
 		virtual ~abstract_optics();
 
-		virtual position *intersection_with_ray(ray *) const;
+		virtual vector2D *intersection_with_ray(ray *) const;
 		virtual ray *generate_ray(ray *);
 
-		QList<ray *> get_generated_rays() const;
-		void delete_ray(ray *r);
 		QPainterPath get_outline() const;
 		QPen get_pen() const;
 		QBrush get_brush () const;
@@ -27,7 +25,6 @@ class abstract_optics
 		virtual void setup_pen_and_bruh();
 
 	protected:
-		QList<ray *> generated_rays;
 		field *background;
 		QPainterPath outline;
 		QPen pen;

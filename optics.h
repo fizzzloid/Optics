@@ -2,7 +2,7 @@
 #define OPTICS_H
 
 #include "field.h"
-#include "position.h"
+#include "vector2D.h"
 #include "ray.h"
 #include "lenses.h"
 

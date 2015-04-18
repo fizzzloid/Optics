@@ -15,18 +15,19 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     ray.cpp \
-    position.cpp \
+    vector2D.cpp \
     field.cpp \
     abstractoptics.cpp \
 	mirror.cpp \
     wall.cpp \
     prism.cpp \
     thin_lense.cpp \
-    common_functions.cpp
+    common_functions.cpp \
+    sphere.cpp
 
 HEADERS  += mainwindow.h \
     ray.h \
-    position.h \
+	vector2D.h \
     abstractoptics.h \
     field.h \
     optics.h \
@@ -35,4 +36,5 @@ HEADERS  += mainwindow.h \
     common_functions.h \
     prism.h \
     thin_lense.h \
-    lenses.h
+    lenses.h \
+    sphere.h

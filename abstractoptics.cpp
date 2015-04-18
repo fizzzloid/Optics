@@ -1,5 +1,5 @@
 #include "abstractoptics.h"
-#include "position.h"
+#include "vector2D.h"
 #include "ray.h"
 #include "field.h"
 #include <QPainterPath>
@@ -13,7 +13,7 @@ abstract_optics::abstract_optics(field *backg)
 
 abstract_optics::~abstract_optics() {}
 
-position *abstract_optics::intersection_with_ray(ray *) const
+vector2D *abstract_optics::intersection_with_ray(ray *) const
 {
 	qDebug() << "abstract";
 	return 0;
@@ -24,15 +24,6 @@ ray *abstract_optics::generate_ray(ray *)
 	return 0;
 }
 
-QList<ray *> abstract_optics::get_generated_rays() const
-{
-	return generated_rays;
-}
-
-void abstract_optics::delete_ray(ray *r)
-{
-	generated_rays.removeOne(r);
-}
 
 QPainterPath abstract_optics::get_outline() const
 {

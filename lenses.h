@@ -3,3 +3,4 @@
 #include "mirror.h"
 #include "wall.h"
 #include "prism.h"
+#include "sphere.h"

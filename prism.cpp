@@ -16,17 +16,17 @@ prism::prism(QPolygonF p, qreal index_of_refraction, field *backg)
 
 prism::~prism() {}
 
-position *prism::intersection_with_ray(ray *r) const
+vector2D *prism::intersection_with_ray(ray *r) const
 {
 	qint32 l = polygon.length();
-	position e = r->get_emitter_pos();
-	position *nearest_intersection = 0;
+	vector2D e = r->get_emitter_pos();
+	vector2D *nearest_intersection = 0;
 	qreal nearest_dist = INFINITY;
 	for(qint32 i = 0; i < l; i++)
 	{
-		position p1 = polygon[i];
-		position p2 = polygon[(i+1)%l];
-		position *cur_intersect =
+		vector2D p1 = polygon[i];
+		vector2D p2 = polygon[(i+1)%l];
+		vector2D *cur_intersect =
 			common_functions::stretch_intersection(p1, p2, r);
 		if (cur_intersect && (e.distance(*cur_intersect) < nearest_dist))
 		{
@@ -42,7 +42,7 @@ ray *prism::generate_ray(ray *r)
 {
 	if (r->get_intensity() < ray::min_intensity) return 0;
 	if (r->get_intersection_object() != this) return 0;
-	position cross = *r->get_intersection_point();
+	vector2D cross = *r->get_intersection_point();
 
 	qint32 l = polygon.length();
 	qreal min_dist = INFINITY;
@@ -59,8 +59,8 @@ ray *prism::generate_ray(ray *r)
 	}
 
 	// sin(alpha)/sin(betta) = n1 / n2
-	position n(normal[cross_num]);
-	position d(r->get_direction_vect());
+	vector2D n(normal[cross_num]);
+	vector2D d(r->get_direction_vect());
 
 	qreal tetta;
 	qreal cos_alpha = n.scalar_mult(d);
@@ -70,7 +70,7 @@ ray *prism::generate_ray(ray *r)
 	else tetta = background->get_index_of_refraction() / index_of_refr;
 	qreal sin_betta = -sin_alpha * tetta;
 
-	position dir;
+	vector2D dir;
 	if (qFabs(sin_betta) > 1.0) //total inside refraction
 		dir = d - 2 * n*n.scalar_mult(d);
 	else
@@ -89,9 +89,9 @@ void prism::calculate_geometry()
 {
 	qint32 l = polygon.length();
 
-	position e1 = (polygon[0] + polygon[1%l]) / 2;
-	position n1;
-	position t(polygon[1%l] - polygon[0]);
+	vector2D e1 = (polygon[0] + polygon[1%l]) / 2;
+	vector2D n1;
+	vector2D t(polygon[1%l] - polygon[0]);
 	t /= t.length();
 	n1.setX(-t.y());
 	n1.setY(t.x());
@@ -102,8 +102,8 @@ void prism::calculate_geometry()
 
 	for (qint32 i = 0; i < l; i++)
 	{
-		position p1 = polygon[i];
-		position p2 = polygon[(i+1)%l];
+		vector2D p1 = polygon[i];
+		vector2D p2 = polygon[(i+1)%l];
 		tangent.append( (p2 - p1) / p1.distance(p2) );
 
 		if (common_functions::stretch_intersection(p1, p2, trial_ray))
@@ -119,7 +119,7 @@ void prism::calculate_geometry()
 
 	for (qint32 i = 0; i < l; i++)
 	{
-		position n(-tangent[i].y(), tangent[i].x());
+		vector2D n(-tangent[i].y(), tangent[i].x());
 		normal.append(n*sign);
 	}
 }

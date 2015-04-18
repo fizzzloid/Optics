@@ -1,7 +1,7 @@
 #include "wall.h"
 #include "common_functions.h"
 
-wall::wall(position start, position end, field *backg) :
+wall::wall(vector2D start, vector2D end, field *backg) :
 	abstract_optics(backg)
 {
 	edge_a = start;
@@ -19,17 +19,17 @@ wall::wall(position start, position end, field *backg) :
 
 wall::~wall() {}
 
-position *wall::intersection_with_ray(ray *r) const
+vector2D *wall::intersection_with_ray(ray *r) const
 {
 	return common_functions::stretch_intersection(edge_a, edge_b, r);
 }
 
 void wall::generate_outline()
 {
-	position p1(edge_a + normal * length * thickness);
-	position p2(edge_a - normal * length * thickness);
-	position p3(edge_b - normal * length * thickness);
-	position p4(edge_b + normal * length * thickness);
+	vector2D p1(edge_a + normal * length * thickness);
+	vector2D p2(edge_a - normal * length * thickness);
+	vector2D p3(edge_b - normal * length * thickness);
+	vector2D p4(edge_b + normal * length * thickness);
 
 	outline.moveTo(p1);
 	outline.lineTo(p2);

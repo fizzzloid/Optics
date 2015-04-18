@@ -2,6 +2,7 @@
 #include "optics.h"
 #include <QtWidgets>
 #include <QDebug>
+#include "common_functions.h"
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
@@ -12,14 +13,10 @@ MainWindow::MainWindow(QWidget *parent)
 	setMinimumSize(700,700);
 
 	for (int i = -3; i < 4; i++)
-		new ray(0.50, 0.15, 4 + i * 0.05, mainfield);
-	new mirror(position(0.05, 0.05), position(0.05, 0.25), true, mainfield);
-	new mirror(position(0.05, 0.25), position(0.25, 0.25), true, mainfield);
-	new mirror(position(0,0), position(0.80,0), false, mainfield);
+		new ray(0.50, 0.15, M_PI + i * 0.07, mainfield);
 
-	QPolygonF poly;
-	poly << QPointF(0.25, 0.05) << QPointF(0.25, 0.25)
-		 << QPointF(0.45, 0.25);
+	QPolygonF poly = common_functions
+			::regular_polygon(QPointF(0.35, 0.15), 0.04, 7);
 
 	new prism(poly, 1.3, mainfield);
 

@@ -5,7 +5,7 @@
 #include <QPainter>
 #include <common_functions.h>
 
-thin_lense::thin_lense(position start, position end,
+thin_lense::thin_lense(vector2D start, vector2D end,
 					   qreal dioptr, field *backg) : abstract_optics(backg)
 {
 	edge_a = start;
@@ -25,7 +25,7 @@ thin_lense::thin_lense(position start, position end,
 	generate_outline();
 }
 
-thin_lense::thin_lense(position cntr, position norm, qreal r,
+thin_lense::thin_lense(vector2D cntr, vector2D norm, qreal r,
 					   qreal dioptr, field *backg) : abstract_optics(backg)
 {
 	center = cntr;
@@ -47,7 +47,7 @@ thin_lense::thin_lense(position cntr, position norm, qreal r,
 
 thin_lense::~thin_lense() {}
 
-position *thin_lense::intersection_with_ray(ray *r) const
+vector2D *thin_lense::intersection_with_ray(ray *r) const
 {
 	return common_functions::stretch_intersection(edge_a, edge_b, r);
 }
@@ -56,7 +56,7 @@ ray *thin_lense::generate_ray(ray *r)
 {
 	if (r->get_intensity() < ray::min_intensity) return 0;
 	if (r->get_intersection_object() != this) return 0;
-	position cross = *r->get_intersection_point();
+	vector2D cross = *r->get_intersection_point();
 
 	qreal R = center.distance(cross);
 	if (cross.distance(edge_a) > cross.distance(edge_b)) R *= -1;
@@ -67,7 +67,7 @@ ray *thin_lense::generate_ray(ray *r)
 	 * v = b*ctg(betta)
 	 */
 
-	position d = r->get_direction_vect();
+	vector2D d = r->get_direction_vect();
 
 	// sin_alpha = [d,n]/(|d|*|n|); |d| = |n| = 1
 	qreal sin_alpha = d.vect_mult(normal);
@@ -85,7 +85,6 @@ ray *thin_lense::generate_ray(ray *r)
 			new_ray->set_direction(M_PI - betta);
 
 	r->set_child(new_ray);
-	generated_rays.append(new_ray);
 
 	return new_ray;
 }
@@ -111,20 +110,20 @@ void thin_lense::generate_outline()
 	if (D >= 0.0 ) k = radius * 0.1;
 	else k = -radius * 0.1;
 
-	position whisker_a1(tangent);
+	vector2D whisker_a1(tangent);
 	whisker_a1 += normal;
 	whisker_a1 *= k;
 	whisker_a1 += edge_a;
 
-	position whisker_a2(whisker_a1);
+	vector2D whisker_a2(whisker_a1);
 	whisker_a2 -= normal * 2 * k;
 
-	position whisker_b1(tangent);
+	vector2D whisker_b1(tangent);
 	whisker_b1 += normal;
 	whisker_b1 *= -k;
 	whisker_b1 += edge_b;
 
-	position whisker_b2(whisker_b1);
+	vector2D whisker_b2(whisker_b1);
 	whisker_b2 += normal * 2 * k;
 
 	outline.moveTo(whisker_a1);

@@ -25,7 +25,7 @@ ray::ray(qreal xpos, qreal ypos, qreal dir, field *f, qreal intens)
 	background->add_ray(this);
 }
 
-ray::ray(qreal xpos, qreal ypos, position dir_vect, field *f, qreal intens)
+ray::ray(qreal xpos, qreal ypos, vector2D dir_vect, field *f, qreal intens)
 {
 	emitter.setX(xpos);
 	emitter.setY(ypos);
@@ -50,10 +50,9 @@ ray::~ray()
 	if (path) delete path;
 	if (child) delete child;
 	if (parent && (parent->child == this)) parent->child = 0;
-	if (generator) generator->delete_ray(this);
 }
 
-position ray::get_emitter_pos() const
+vector2D ray::get_emitter_pos() const
 {
 	return emitter;
 }
@@ -61,13 +60,13 @@ position ray::get_emitter_pos() const
 qreal ray::get_direction() const
 { return direction; }
 
-position ray::get_direction_vect() const
+vector2D ray::get_direction_vect() const
 { return dir_vector; }
 
 qreal ray::get_intensity() const
 { return intensity; }
 
-void ray::set_emitter_pos(position emitter_pos)
+void ray::set_emitter_pos(vector2D emitter_pos)
 { emitter = emitter_pos; }
 
 void ray::set_direction(qreal dir)
@@ -78,7 +77,7 @@ void ray::set_direction(qreal dir)
 	generate_outline();
 }
 
-void ray::set_direction_vect(position dir_vect)
+void ray::set_direction_vect(vector2D dir_vect)
 {
 	dir_vector = dir_vect / dir_vect.length();
 	direction = qAcos(dir_vect.x());
@@ -113,11 +112,11 @@ bool ray::new_intersecting_object()
 {
 	QList<abstract_optics *> opt_list = background->get_optics();
 
-	position *nearest_pos = 0;
+	vector2D *nearest_pos = 0;
 	abstract_optics *nearest_object = 0;
 	qreal nearest = INFINITY;
 
-	position *tmp_pos = 0;
+	vector2D *tmp_pos = 0;
 	abstract_optics *tmp_pointer = 0;
 
 	qint32 l = opt_list.length();
@@ -147,7 +146,7 @@ abstract_optics *ray::get_intersection_object() const
 	return intersection_object;
 }
 
-position *ray::get_intersection_point() const
+vector2D *ray::get_intersection_point() const
 {
 	return intersection_point;
 }
@@ -237,7 +236,7 @@ void ray::generate_outline()
 	if (intersection_point) path->lineTo(*intersection_point);
 	else
 	{
-		position ray_end(dir_vector * ray::max_len + emitter);
+		vector2D ray_end(dir_vector * ray::max_len + emitter);
 		path->lineTo(ray_end);
 	}
 }
