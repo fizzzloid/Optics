@@ -20,7 +20,6 @@ class prism : public abstract_optics
 		void calculate_geometry();
 		void generate_outline();
 		QPolygonF polygon;
-		QList<vector2D> tangent;
 		QList<vector2D> normal;
 		qreal index_of_refr;
 };

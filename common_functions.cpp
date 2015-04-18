@@ -1,6 +1,7 @@
 #include "common_functions.h"
 #include "vector2D.h"
 #include "ray.h"
+#include "field.h"
 #include <QPolygonF>
 #include <QtMath>
 
@@ -93,14 +94,46 @@ vector2D *common_functions::intersection_with_circle(QPointF center,
 
 	qreal s1 = d.scalar_mult(p1 - e);
 	qreal s2 = d.scalar_mult(p2 - e);
-	if ( (s1 < 0.0) && (s2 < 0.0) ) return 0;
+	// if emitter is on the edge of lense
+	// or if ray is on the other side from emitter then lense
+	if ( (s1 < 0.00001) && (s2 < 0.00001) ) return 0;
 
 	vector2D result;
 	if (s1 < s2 )
-		if (s1 > 0.0) result = p1 + center;
+		if (s1 > 0.00001) result = p1 + center;
 		else result = p2 + center;
-	else if (s2 > 0.0) result =  p2 + center;
+	else if (s2 > 0.00001) result =  p2 + center;
 		else result = p1 + center;
 
 	return new vector2D(result);
+}
+
+ray *common_functions::generate_prism_ray(vector2D cross,
+			vector2D normal, qreal index_of_refr, ray *r, field *backg)
+{
+	// sin(alpha)/sin(betta) = n1 / n2
+	vector2D d(r->get_direction_vect());
+
+	qreal tetta;
+	qreal cos_alpha = normal.scalar_mult(d);
+	qreal sin_alpha = normal.vect_mult(d);
+	if (cos_alpha > 0)
+		tetta = index_of_refr / backg->get_index_of_refraction();
+	else tetta = backg->get_index_of_refraction() / index_of_refr;
+	qreal sin_betta = -sin_alpha * tetta;
+
+	vector2D dir;
+	if (qFabs(sin_betta) > 1.0) //total inside refraction
+		dir = d - 2 * normal * normal.scalar_mult(d);
+	else
+	{
+		qreal cos_betta = qSqrt(1 - sin_betta * sin_betta);
+		if (cos_alpha < 0) cos_betta *= -1;
+		vector2D tangent(normal.y(), -normal.x());
+		dir = tangent * sin_betta + normal * cos_betta;
+	}
+	ray *new_ray = new ray(cross.x(), cross.y(), dir, backg,
+				   r->get_intensity() - ray::intensity_step);
+	r->set_child(new_ray);
+	return new_ray;
 }

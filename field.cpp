@@ -180,3 +180,22 @@ void field::set_index_of_refraction(qreal i)
 	index_of_refr = i;
 	recalc();
 }
+
+quint32 field::rays_count() const
+{
+	qint32 l = rays.length();
+	qint32 i = 0;
+	quint32 result = 0;
+	bool f = (i < l);
+	ray *cur_ray;
+	if (f) cur_ray = rays[0];
+	while (f)
+	{
+		result++;
+		cur_ray = cur_ray->get_child();
+		if (!cur_ray)
+			if (f = (++i) < l) cur_ray = rays[i];
+	}
+
+	return result;
+}

@@ -9,7 +9,8 @@ class field;
 class sphere : public abstract_optics
 {
 	public:
-		sphere(vector2D cntr, qreal r, field *backg);
+		sphere(vector2D cntr, qreal r,
+			   qreal index_of_refraction, field *backg);
 		~sphere();
 
 		vector2D *intersection_with_ray(ray *r) const;
@@ -19,6 +20,7 @@ class sphere : public abstract_optics
 		void generate_outline();
 		vector2D center;
 		qreal radius;
+		qreal index_of_refr;
 };
 
 #endif // SHPERE_H

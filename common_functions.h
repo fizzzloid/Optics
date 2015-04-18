@@ -5,6 +5,7 @@ class ray;
 class vector2D;
 class QPolygonF;
 class QPointF;
+class field;
 #include <QtGlobal>
 
 namespace common_functions
@@ -20,6 +21,8 @@ namespace common_functions
 
 	vector2D *intersection_with_circle(QPointF center, qreal radius,
 									  ray *r);
+	ray *generate_prism_ray(vector2D cross, vector2D normal,
+							qreal index_of_refr, ray *r, field *backg);
 }
 
 #endif // COMMON_FUNCTIONS_H

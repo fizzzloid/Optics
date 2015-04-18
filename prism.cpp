@@ -58,31 +58,8 @@ ray *prism::generate_ray(ray *r)
 		}
 	}
 
-	// sin(alpha)/sin(betta) = n1 / n2
-	vector2D n(normal[cross_num]);
-	vector2D d(r->get_direction_vect());
-
-	qreal tetta;
-	qreal cos_alpha = n.scalar_mult(d);
-	qreal sin_alpha = n.vect_mult(d);
-	if (cos_alpha > 0)
-		tetta = index_of_refr / background->get_index_of_refraction();
-	else tetta = background->get_index_of_refraction() / index_of_refr;
-	qreal sin_betta = -sin_alpha * tetta;
-
-	vector2D dir;
-	if (qFabs(sin_betta) > 1.0) //total inside refraction
-		dir = d - 2 * n*n.scalar_mult(d);
-	else
-	{
-		qreal cos_betta = qSqrt(1 - sin_betta * sin_betta);
-		if (cos_alpha < 0) cos_betta *= -1;
-		dir = tangent[cross_num] * sin_betta + n * cos_betta;
-	}
-	ray *new_ray = new ray(cross.x(), cross.y(), dir, background,
-				   r->get_intensity() - ray::intensity_step);
-	r->set_child(new_ray);
-	return new_ray;
+	return common_functions::generate_prism_ray
+		(cross, normal[cross_num], index_of_refr, r, background);
 }
 
 void prism::calculate_geometry()
@@ -104,7 +81,6 @@ void prism::calculate_geometry()
 	{
 		vector2D p1 = polygon[i];
 		vector2D p2 = polygon[(i+1)%l];
-		tangent.append( (p2 - p1) / p1.distance(p2) );
 
 		if (common_functions::stretch_intersection(p1, p2, trial_ray))
 			count++;
@@ -119,7 +95,8 @@ void prism::calculate_geometry()
 
 	for (qint32 i = 0; i < l; i++)
 	{
-		vector2D n(-tangent[i].y(), tangent[i].x());
+		vector2D tangent(polygon[(i+1)%l] - polygon[i]);
+		vector2D n(-tangent.y(), tangent.x());
 		normal.append(n*sign);
 	}
 }

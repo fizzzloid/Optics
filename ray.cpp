@@ -86,7 +86,9 @@ void ray::set_direction_vect(vector2D dir_vect)
 }
 
  void ray::set_intensity(qreal intens)
-{ intensity = intens; }
+{
+	intensity = qMin(intens, 1.0);
+}
 
  ray *ray::get_parent() const
 { return parent; }

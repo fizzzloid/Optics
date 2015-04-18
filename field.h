@@ -36,6 +36,8 @@ class field : public QWidget
 		void set_index_of_refraction(qreal i);
 		qreal get_index_of_refraction() const;
 
+		quint32 rays_count() const;
+
 	public slots:
 		void paintEvent(QPaintEvent *);
 
