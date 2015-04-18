@@ -79,33 +79,8 @@ QPolygonF common_functions::regular_polygon
 vector2D *common_functions::intersection_with_circle(QPointF center,
 												qreal radius, ray *r)
 {
-	vector2D d = r->get_direction_vect();
-	vector2D e = r->get_emitter_pos() - center;
-	qreal C = d.vect_mult(e);
-
-	qreal min_dist = qFabs(C);
-	if (min_dist > radius) return 0;
-
-	vector2D nearest_point(-d.y()*C, d.x()*C);
-	qreal delta = qSqrt(radius*radius - C*C);
-
-	vector2D p1( nearest_point + d*delta );
-	vector2D p2( nearest_point - d*delta );
-
-	qreal s1 = d.scalar_mult(p1 - e);
-	qreal s2 = d.scalar_mult(p2 - e);
-	// if emitter is on the edge of lense
-	// or if ray is on the other side from emitter then lense
-	if ( (s1 < 0.00001) && (s2 < 0.00001) ) return 0;
-
-	vector2D result;
-	if (s1 < s2 )
-		if (s1 > 0.00001) result = p1 + center;
-		else result = p2 + center;
-	else if (s2 > 0.00001) result =  p2 + center;
-		else result = p1 + center;
-
-	return new vector2D(result);
+	return common_functions::intersection_with_arc
+			(center, radius, r);
 }
 
 ray *common_functions::generate_prism_ray(vector2D cross,
@@ -136,4 +111,54 @@ ray *common_functions::generate_prism_ray(vector2D cross,
 				   r->get_intensity() - ray::intensity_step);
 	r->set_child(new_ray);
 	return new_ray;
+}
+
+vector2D *common_functions::intersection_with_arc
+			(QPointF center, qreal radius, ray *r,
+			 vector2D angle1, vector2D angle2)
+{
+	vector2D d = r->get_direction_vect();
+	vector2D e = r->get_emitter_pos() - center;
+	qreal C = d.vect_mult(e);
+
+	qreal min_dist = qFabs(C);
+	if (min_dist > radius) return 0;
+
+	vector2D nearest_point(-d.y()*C, d.x()*C);
+	qreal delta = qSqrt(radius*radius - C*C);
+
+	vector2D p1( nearest_point + d*delta );
+	vector2D p2( nearest_point - d*delta );
+
+	qreal s1 = d.scalar_mult(p1 - e);
+	qreal s2 = d.scalar_mult(p2 - e);
+
+	// selecting point from the couple,
+	// that is in the arc.
+
+	if (angle1 != angle2)
+	{
+		qreal prj = angle1.scalar_mult(angle2);
+
+		qreal prj1 = angle1.scalar_mult(p1) / p1.length();
+		qreal prj2 = angle2.scalar_mult(p1) / p1.length();
+		if ((prj1 < prj) || (prj2 < prj)) s1 = -1.0;
+
+		prj1 = angle1.scalar_mult(p2);
+		prj2 = angle2.scalar_mult(p2);
+		if ((prj1 < prj) || (prj2 < prj)) s2 = -1.0;
+	}
+
+	// if emitter is on the edge of lense
+	// or if ray is on the other side from emitter then lense
+	if ( (s1 < 0.00001) && (s2 < 0.00001) ) return 0;
+
+	vector2D result;
+	if (s1 < s2 )
+		if (s1 > 0.00001) result = p1 + center;
+		else result = p2 + center;
+	else if (s2 > 0.00001) result =  p2 + center;
+		else result = p1 + center;
+
+	return new vector2D(result);
 }
