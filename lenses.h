@@ -2,3 +2,4 @@
 #include "thin_lense.h"
 #include "mirror.h"
 #include "wall.h"
+#include "prism.h"

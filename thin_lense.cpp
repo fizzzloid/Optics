@@ -8,13 +8,13 @@
 thin_lense::thin_lense(position start, position end,
 					   qreal dioptr, field *backg) : abstract_optics(backg)
 {
-	edge_a = start.x();
-	edge_b = end.x();
+	edge_a = start;
+	edge_b = end;
 
-	center = (edge_a.x() + edge_b.x()) / 2.0;
+	center = (edge_a + edge_b) / 2.0;
 	radius = edge_a.distance(edge_b) / 2.0;
 
-	tangent = (edge_a.x() - edge_b.x()) / (2 * radius);
+	tangent = (edge_a - edge_b) / (2 * radius);
 
 	normal.setX(-tangent.y());
 	normal.setY(tangent.x());

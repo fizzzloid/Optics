@@ -11,7 +11,7 @@ class position : public QPointF
 		qreal distance(position p) const;
 		qreal scalar_mult(position p) const ;
 		qreal vect_mult(position p) const;
-		position operator= (position p);
+		position operator= (const position &p);
 };
 
 #endif // POSITION_H

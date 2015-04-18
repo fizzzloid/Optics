@@ -21,7 +21,6 @@ class prism : public abstract_optics
 		QPolygonF polygon;
 		QList<position> tangent;
 		QList<position> normal;
-		enum inside {left, right};
 		qreal index_of_refr;
 };
 

@@ -3,25 +3,25 @@
 #include "ray.h"
 #include "common_functions.h"
 #include <QtMath>
-
-mirror::mirror(position start, position end, bool orient, field *backg)
+#include <QDebug>
+mirror::mirror(position start, position end,
+			   bool orient, field *backg)
 	: abstract_optics(backg)
 {
 	edge_a = start;
 	edge_b = end;
 
 	length = edge_a.distance(edge_b);
-	tangent = (edge_a.x() - edge_b.x()) / length;
-	normal.setX(tangent.y());
-	normal.setY(-tangent.x());
-	if (orient) normal *= -1;
+	tangent = (edge_a - edge_b) / length;
+	normal.setX(-tangent.y());
+	normal.setY(tangent.x());
+	if (!orient) normal *= -1;
 
 	background = backg;
 	background->add_optic(this);
 
 	setup_pen_and_bruh();
 	generate_outline();
-
 }
 
 mirror::~mirror() {}
@@ -38,12 +38,11 @@ ray *mirror::generate_ray(ray *r)
 
 	position dir = r->get_direction_vect();
 	// if ray is coming from "black" side of mirror
-	if (normal.scalar_mult(dir) <= 0) return 0;
+	if (normal.scalar_mult(dir) >= 0) return 0;
 
 	position cross = *r->get_intersection_point();
 
 	position new_dir = dir;
-
 	new_dir -= 2 * normal * normal.scalar_mult(dir);
 
 	ray *new_ray = new ray(cross.x(), cross.y(), new_dir,
@@ -59,9 +58,9 @@ void mirror::generate_outline()
 	outline.moveTo(edge_a);
 	outline.lineTo(edge_b);
 
-	position add_vect =  -normal - tangent;
+	position add_vect =  -normal + tangent;
 	add_vect /= add_vect.length();
-	add_vect *= - length / hatch_count;
+	add_vect *= length / hatch_count;
 
 	for (quint32 i = 0; i < hatch_count; i++)
 	{

@@ -3,7 +3,6 @@
 #include "lenses.h"
 #include <QPainter>
 #include <QtMath>
-#include <QDebug>
 
 field::field(QWidget *parent) : QWidget(parent)
 {

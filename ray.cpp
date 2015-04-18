@@ -80,9 +80,9 @@ void ray::set_direction(qreal dir)
 
 void ray::set_direction_vect(position dir_vect)
 {
-	dir_vector = dir_vect / dir_vector.length();
-	direction = qAsin(dir_vect.y());
-	if (dir_vect.x() < 0) direction += M_PI;
+	dir_vector = dir_vect / dir_vect.length();
+	direction = qAcos(dir_vect.x());
+	if (dir_vect.y() < 0) direction *= -1;
 	generate_outline();
 }
 
@@ -237,9 +237,7 @@ void ray::generate_outline()
 	if (intersection_point) path->lineTo(*intersection_point);
 	else
 	{
-		position ray_end(qCos(direction), qSin(direction));
-		ray_end *= ray::max_len;
-		ray_end += emitter;
+		position ray_end(dir_vector * ray::max_len + emitter);
 		path->lineTo(ray_end);
 	}
 }

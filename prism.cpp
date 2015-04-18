@@ -9,6 +9,45 @@ prism::prism(QPolygonF p, qreal index_of_refraction, field *backg)
 {
 	polygon = p;
 	index_of_refr = index_of_refraction;
+
+	qint32 l = polygon.length();
+
+	position e1 = (polygon[0] + polygon[1%l]) / 2;
+	position n1;
+	position t(polygon[1%l] - polygon[0]);
+	t /= t.length();
+	n1.setX(-t.y());
+	n1.setY(t.x());
+
+	qint32 count = 0;
+	ray *trial_ray =
+			new ray(e1.x(), e1.y(), n1, background);
+
+	for (qint32 i = 0; i < l; i++)
+	{
+		position p1 = polygon[i];
+		position p2 = polygon[(i+1)%l];
+		tangent.append( (p2 - p1) / p1.distance(p2) );
+
+		if (common_functions::stretch_intersection(p1, p2, trial_ray))
+			count++;
+	}
+
+	background->delete_ray(trial_ray);
+	delete trial_ray;
+
+	qint32 sign;
+	if (count%2) sign = 1;
+	else sign = -1;
+
+	for (qint32 i = 0; i < l; i++)
+	{
+		position n(-tangent[i].y(), tangent[i].x());
+		normal.append(n*sign);
+	}
+
+	setup_pen_and_bruh();
+	generate_outline();
 }
 
 prism::~prism() {}
@@ -76,7 +115,17 @@ ray *prism::generate_ray(ray *r)
 		if (cos_alpha > 0) cos_betta *= -1;
 		dir = tangent[cross_num] * sin_betta + n * cos_betta;
 	}
-	return new ray(cross.x(), cross.y(), dir, background,
+	ray *new_ray = new ray(cross.x(), cross.y(), dir, background,
 				   r->get_intensity() - ray::intensity_step);
+	r->set_child(new_ray);
+	return new_ray;
+}
 
+void prism::generate_outline()
+{
+	outline.moveTo(polygon[0]);
+	qint32 l = polygon.length();
+	for (qint32 i = 0; i < l; i++)
+		outline.lineTo(polygon[i]);
+	outline.lineTo(polygon[0]);
 }

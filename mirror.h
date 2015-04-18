@@ -7,7 +7,7 @@
 class mirror : public abstract_optics
 {
 	public:
-		mirror(position start, position end, bool orient, field *backg);
+		mirror(position start, position end, bool orient,  field *backg);
 		~mirror();
 
 		position *intersection_with_ray(ray *r) const;

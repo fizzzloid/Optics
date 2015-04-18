@@ -26,6 +26,13 @@ position *common_functions::stretch_intersection
 
 	// if cross is on the same line with the stratch,
 	// but not between edge_a and edge_b - return 0
+
+	position tangent = edge_b - edge_a;
+	qreal length = tangent.length();
+	tangent /= length;
+	qreal t1 = tangent.scalar_mult(cross - edge_a);
+	if ( (t1 < 0.0) || (length < t1)) return 0;
+/*
 	if (Dx != 0.0)
 	{
 		qreal t1 = ( edge_b.x() - cross.x() ) / Dx;
@@ -36,7 +43,7 @@ position *common_functions::stretch_intersection
 		qreal t1 = ( edge_b.y() - cross.y() ) / Dy;
 		if ((t1 < 0.0) || (1.0 < t1)) return 0;
 	}
-	else return 0;
+	else return 0; */
 
 	return new position(cross);
 }

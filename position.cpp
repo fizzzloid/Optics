@@ -25,7 +25,7 @@ qreal position::distance(position p) const
 	return p.length();
 }
 
-position position::operator =(position p)
+position position::operator =(const position &p)
 {
 	setX(p.x());
 	setY(p.y());
