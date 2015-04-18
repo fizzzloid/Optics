@@ -16,10 +16,9 @@ vector2D *common_functions::stretch_intersection
 
 	qreal denominator = d.x() * Dy - d.y() * Dx;
 
-	if (denominator == 0.0) return 0;	// if ray is parallel to the stratch
-
 	qreal t = (e.y() - edge_a.y()) * Dx - (e.x() - edge_a.x()) * Dy;
 	t /= denominator;
+	if (qIsNaN(t)) return 0;
 
 	if (t < 0.00001) return 0; // if ray is starting from the stratch
 							// or after stretch

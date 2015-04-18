@@ -14,7 +14,8 @@ MainWindow::MainWindow(QWidget *parent)
 	for (int i = -3; i < 4; i++)
 	new ray(0.50, 0.15, M_PI + i*0.13, mainfield);
 
-	new sphere(QPointF(0.35, 0.15), 0.06, 1.5, mainfield);
+	new real_lense(vector2D(0.15, 0.05), vector2D(0.15, 0.45),
+				   0.01, 0.5, 0.0, 1.7, mainfield);
 
 	mainfield->recalc();
 	mainfield->corner_turn(-0.1, -0.1);

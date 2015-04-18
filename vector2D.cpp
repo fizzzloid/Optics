@@ -31,3 +31,11 @@ vector2D vector2D::operator =(const vector2D &p)
 	setY(p.y());
 	return *this;
 }
+
+qreal vector2D::angle() const
+{
+	vector2D ort = *this / length();
+	qreal angle = qAsin(ort.y());
+	if (ort.x() < 0) angle += M_PI;
+	return angle;
+}

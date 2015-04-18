@@ -4,3 +4,4 @@
 #include "wall.h"
 #include "prism.h"
 #include "sphere.h"
+#include "real_lense.h"

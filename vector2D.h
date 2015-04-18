@@ -12,6 +12,7 @@ class vector2D : public QPointF
 		qreal scalar_mult(vector2D p) const ;
 		qreal vect_mult(vector2D p) const;
 		vector2D operator= (const vector2D &p);
+		qreal angle() const;
 };
 
 #endif // vector2D_H

@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     prism.cpp \
     thin_lense.cpp \
     common_functions.cpp \
-    sphere.cpp
+    sphere.cpp \
+    real_lense.cpp
 
 HEADERS  += mainwindow.h \
     ray.h \
@@ -37,4 +38,5 @@ HEADERS  += mainwindow.h \
     prism.h \
     thin_lense.h \
     lenses.h \
-    sphere.h
+    sphere.h \
+    real_lense.h
