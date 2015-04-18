@@ -54,8 +54,8 @@ class ray
 		void set_emitter_radius(qreal r);
 
 		const static qreal max_len = 1e3;
-		const static qreal min_brigh = 0.01;
-		const static qreal bright_step = 0.01;
+		const static qreal min_intensity = 0.01;
+		const static qreal intensity_step = 0.01;
 
 	private:
 		void generate_outline();

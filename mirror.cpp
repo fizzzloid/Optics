@@ -11,9 +11,7 @@ mirror::mirror(position start, position end, bool orient, field *backg)
 	edge_b = end;
 
 	length = edge_a.distance(edge_b);
-	tangent.setX(edge_a.x() - edge_b.x());
-	tangent.setY(edge_a.y() - edge_b.y());
-	tangent /= length;
+	tangent = (edge_a.x() - edge_b.x()) / length;
 	normal.setX(tangent.y());
 	normal.setY(-tangent.x());
 	if (orient) normal *= -1;
@@ -35,7 +33,7 @@ position *mirror::intersection_with_ray(ray *r) const
 
 ray *mirror::generate_ray(ray *r)
 {
-	if (r->get_intensity() < ray::min_brigh) return 0;
+	if (r->get_intensity() < ray::min_intensity) return 0;
 	if (r->get_intersection_object() != this) return 0;
 
 	position dir = r->get_direction_vect();
@@ -50,7 +48,7 @@ ray *mirror::generate_ray(ray *r)
 
 	ray *new_ray = new ray(cross.x(), cross.y(), new_dir,
 						   background,
-						   r->get_intensity() - ray::bright_step);
+						   r->get_intensity() - ray::intensity_step);
 	r->set_child(new_ray);
 	generated_rays.append(new_ray);
 	return new_ray;

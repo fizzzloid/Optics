@@ -20,9 +20,9 @@ SOURCES += main.cpp\
     abstractoptics.cpp \
 	mirror.cpp \
     wall.cpp \
-    common_functions.cpp \
     prism.cpp \
-    thin_lense.cpp
+    thin_lense.cpp \
+    common_functions.cpp
 
 HEADERS  += mainwindow.h \
     ray.h \

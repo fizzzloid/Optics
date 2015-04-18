@@ -80,10 +80,8 @@ void ray::set_direction(qreal dir)
 
 void ray::set_direction_vect(position dir_vect)
 {
-	dir_vector.setX(dir_vect.x());
-	dir_vector.setY(dir_vect.y());
-	dir_vector /= dir_vector.length();
-	direction = qAtan(dir_vect.y() / dir_vect.x());
+	dir_vector = dir_vect / dir_vector.length();
+	direction = qAsin(dir_vect.y());
 	if (dir_vect.x() < 0) direction += M_PI;
 	generate_outline();
 }

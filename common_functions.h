@@ -1,15 +1,17 @@
 #ifndef COMMON_FUNCTIONS_H
 #define COMMON_FUNCTIONS_H
 
-class position;
 class ray;
+class position;
+#include <QtGlobal>
 
 namespace common_functions
 {
-		position *stretch_intersection
-			(position edge_a, position edge_b, ray* r);
-		qreal qist_to_stratch(position edge_a, position edge_b,
-							  position p);
+	position *stretch_intersection
+		(position edge_a, position edge_b, ray* r);
+
+	qreal dist_to_stratch
+		(position edge_a, position edge_b, position p);
 }
 
 #endif // COMMON_FUNCTIONS_H

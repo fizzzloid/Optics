@@ -24,3 +24,10 @@ qreal position::distance(position p) const
 	p -= *this;
 	return p.length();
 }
+
+position position::operator =(position p)
+{
+	setX(p.x());
+	setY(p.y());
+	return *this;
+}

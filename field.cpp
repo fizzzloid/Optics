@@ -171,12 +171,12 @@ void field::corner_turn(qreal incx, qreal incy)
 	corner.setY(corner.y() + incy);
 }
 
-void field::get_index_of_refraction() const
+qreal field::get_index_of_refraction() const
 {
 	return index_of_refr;
 }
 
-qreal field::set_index_of_refraction(qreal i)
+void field::set_index_of_refraction(qreal i)
 {
 	index_of_refr = i;
 	recalc();

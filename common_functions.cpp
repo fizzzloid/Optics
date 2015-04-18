@@ -19,11 +19,10 @@ position *common_functions::stretch_intersection
 	t /= denominator;
 
 	if (t < 0.00001) return 0; // if ray is starting from the stratch
-								// or after stretch
+							// or after stretch
 
 	position cross;
-	cross.setX(e.x() + d.x() * t);
-	cross.setY(e.y() + d.y() * t);
+	cross = e + d * t;
 
 	// if cross is on the same line with the stratch,
 	// but not between edge_a and edge_b - return 0
@@ -42,18 +41,24 @@ position *common_functions::stretch_intersection
 	return new position(cross);
 }
 
-qreal common_functions::dist_to_stratch(position edge_a, position edge_b,
-										position p)
+qreal common_functions::dist_to_stratch
+	(position edge_a, position edge_b, position p)
 {
 	position tangent(edge_b - edge_a);
 	qreal l = tangent.length();
 	tangent /= l;
+
 	// s - the length of proection of (p-edge_a) on stretch
 	qreal s = tangent.scalar_mult(p - edge_a);
+
 	// if s too short or too long
 	if (s < 0) return edge_a.distance(p);
 	else if (s > l) return edge_b.distance(p);
 	// else return the length of normal component of (p-edge_a)
-	else return (p - edge_a - s*tangent).length();
+	else
+	{
+		position v(p - edge_a - s*tangent);
+		return v.length();
+	}
 }
 

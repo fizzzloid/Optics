@@ -8,19 +8,13 @@
 thin_lense::thin_lense(position start, position end,
 					   qreal dioptr, field *backg) : abstract_optics(backg)
 {
-	edge_a.setX(start.x());
-	edge_a.setY(start.y());
-	edge_b.setX(end.x());
-	edge_b.setY(end.y());
+	edge_a = start.x();
+	edge_b = end.x();
 
-	center.setX(edge_a.x() + edge_b.x());
-	center.setY(edge_a.y() + edge_b.y());
-	center /= 2.0;
+	center = (edge_a.x() + edge_b.x()) / 2.0;
 	radius = edge_a.distance(edge_b) / 2.0;
 
-	tangent.setX(edge_a.x() - edge_b.x());
-	tangent.setY(edge_a.y() - edge_b.y());
-	tangent /= 2 * radius;
+	tangent = (edge_a.x() - edge_b.x()) / (2 * radius);
 
 	normal.setX(-tangent.y());
 	normal.setY(tangent.x());
@@ -34,11 +28,8 @@ thin_lense::thin_lense(position start, position end,
 thin_lense::thin_lense(position cntr, position norm, qreal r,
 					   qreal dioptr, field *backg) : abstract_optics(backg)
 {
-	center.setX(cntr.x());
-	center.setY(cntr.y());
-	normal.setX(norm.x());
-	normal.setY(norm.y());
-	normal /= normal.length();
+	center = cntr;
+	normal= norm / norm.length();
 
 	radius = r;
 	D = dioptr;
@@ -63,7 +54,7 @@ position *thin_lense::intersection_with_ray(ray *r) const
 
 ray *thin_lense::generate_ray(ray *r)
 {
-	if (r->get_intensity() < ray::min_brigh) return 0;
+	if (r->get_intensity() < ray::min_intensity) return 0;
 	if (r->get_intersection_object() != this) return 0;
 	position cross = *r->get_intersection_point();
 
@@ -88,7 +79,7 @@ ray *thin_lense::generate_ray(ray *r)
 	qreal betta = qAtan(R*D - tan_alpha);
 
 	ray *new_ray = new ray(cross.x(), cross.y(), betta + angle,
-						   background, r->get_intensity() - ray::bright_step);
+						   background, r->get_intensity() - ray::intensity_step);
 	if ( normal.scalar_mult(d)
 		*normal.scalar_mult(new_ray->get_direction_vect()) < 0)
 			new_ray->set_direction(M_PI - betta);

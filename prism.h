@@ -16,12 +16,12 @@ class prism : public abstract_optics
 		position *intersection_with_ray(ray *r) const;
 		ray *generate_ray(ray *r);
 
-		QPolygonF operator <<(QPolygonF &p);
-		QPolygonF operator <<(QPointF &p);
-
 	private:
 		void generate_outline();
 		QPolygonF polygon;
+		QList<position> tangent;
+		QList<position> normal;
+		enum inside {left, right};
 		qreal index_of_refr;
 };
 
