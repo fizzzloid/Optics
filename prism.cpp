@@ -11,7 +11,7 @@ prism::prism(QPolygonF p, qreal index_of_refraction, field *backg)
 	polygon = p;
 	index_of_refr = index_of_refraction;
 	calculate_geometry();
-	setup_pen_and_bruh();
+	setup_pen_and_brush();
 	generate_outline();
 }
 

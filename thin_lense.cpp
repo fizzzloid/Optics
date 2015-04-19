@@ -21,7 +21,7 @@ thin_lense::thin_lense(vector2D start, vector2D end,
 	angle = qAsin(normal.y() / normal.length());
 	D = dioptr;
 
-	setup_pen_and_bruh();
+	setup_pen_and_brush();
 	generate_outline();
 }
 
@@ -41,7 +41,7 @@ thin_lense::thin_lense(vector2D cntr, vector2D norm, qreal r,
 
 	angle = qAcos(normal.x() / normal.length());
 
-	setup_pen_and_bruh();
+	setup_pen_and_brush();
 	generate_outline();
 }
 
@@ -92,7 +92,7 @@ ray *thin_lense::generate_ray(ray *r)
 	return new_ray;
 }
 
-void thin_lense::setup_pen_and_bruh()
+void thin_lense::setup_pen_and_brush()
 {
 	pen.setColor(Qt::blue);
 	pen.setWidth(2);

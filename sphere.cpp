@@ -14,7 +14,7 @@ sphere::sphere(vector2D cntr, qreal r,
 	radius = r;
 	index_of_refr = index_of_refraction;
 
-	setup_pen_and_bruh();
+	setup_pen_and_brush();
 	generate_outline();
 }
 

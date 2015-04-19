@@ -24,7 +24,7 @@ class abstract_optics
 		QPen get_pen() const;
 		QBrush get_brush () const;
 
-		virtual void setup_pen_and_bruh();
+		virtual void setup_pen_and_brush();
 
 	protected:
 		field *background;

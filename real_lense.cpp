@@ -7,7 +7,6 @@
 #include <QtMath>
 #include <QPair>
 #include <QDebug>
-
 real_lense::real_lense(vector2D a, vector2D b,
 						qreal thicknes,
 						qreal radius1, qreal radius2,
@@ -21,11 +20,11 @@ real_lense::real_lense(vector2D a, vector2D b,
 	normal = (edge_b - edge_a) / length;
 
 	// Not two. Because.
-	if (2 * qFabs(radius1) > length) R1 = radius1;
+	if (2 * qFabs(radius1) >= length) R1 = radius1;
 	else if (radius1 >= 0) R1 = length / 1.99999;
 	else R1 = - length / 1.99999;
 
-	if (2 * qFabs(radius2) > length) R2 = radius2;
+	if (2 * qFabs(radius2) >= length) R2 = radius2;
 	else if (radius2 >= 0) R2 = length / 1.99999;
 	else R2 = - length / 1.99999;
 	thick = thicknes;
@@ -55,7 +54,7 @@ real_lense::real_lense(vector2D a, vector2D b,
 	angle_v_2a = corner_2a - center2;
 	angle_v_2b = corner_2b - center2;
 
-	setup_pen_and_bruh();
+	setup_pen_and_brush();
 	generate_outline();
 }
 
@@ -66,12 +65,12 @@ QPair<vector2D *, qint32> real_lense::intersection_with_ray
 {
 	QList<vector2D *> crosses;
 	crosses.append(common_functions::stretch_intersection
-					(corner_1a, corner_1b, r));
-	crosses.append(common_functions::stretch_intersection
-				   (corner_2a, corner_2b, r));
+					(corner_1a, corner_2a, r));
 	crosses.append(common_functions::intersection_with_arc
 				   (center1, R1, r,
 					angle_v_1a, angle_v_1b));
+	crosses.append(common_functions::stretch_intersection
+				   (corner_1b, corner_2b, r));
 	crosses.append(common_functions::intersection_with_arc
 				   (center2, R2, r,
 					angle_v_2a, angle_v_2b));
@@ -79,7 +78,7 @@ QPair<vector2D *, qint32> real_lense::intersection_with_ray
 	vector2D *cross = 0;
 	vector2D e(r->get_emitter_pos());
 	qreal min_dist = INFINITY;
-	qint32 part = 100;
+	qint32 part = -1;
 	qreal cur_dist;
 	for (qint32 i = 0; i < 4; i++)
 		if ( crosses[i] &&
@@ -89,7 +88,6 @@ QPair<vector2D *, qint32> real_lense::intersection_with_ray
 			cross = crosses[i];
 			part = i;
 		}
-	qDebug() << part;
 	return QPair<vector2D *, qint32> (cross, part);
 }
 
@@ -128,7 +126,7 @@ ray *real_lense::generate_ray(ray *r)
 void real_lense::generate_outline()
 {
 	outline.moveTo(corner_2a);
-	outline.lineTo(corner_1a);
+//	outline.lineTo(corner_1a);
 
 	qreal abs = qFabs(R1);
 	if (R1 >= 0) outline.arcTo(center1.x() - abs,
@@ -137,14 +135,14 @@ void real_lense::generate_outline()
 							angle_v_1b.angle() - angle_v_1a.angle());
 	else outline.arcTo(center1.x() - abs,
 					  center1.y() - abs,
-					  2*abs, 2*abs,  angle_v_1b.angle(),
+					  2*abs, 2*abs,  -angle_v_1a.angle(),
 					  angle_v_1a.angle() - angle_v_1b.angle());
 
-	outline.lineTo(corner_2b);
+//	outline.lineTo(corner_2b);
 	abs  = qFabs(R2);
-	if (R2 >= 0)	outline.arcTo(center2.x() - abs,
+	if (R2 >= 0) outline.arcTo(center2.x() - abs,
 							  center2.y() - abs,
-							  2*abs, 2*abs, angle_v_2a.angle(),
+							  2*abs, 2*abs, -angle_v_2b.angle(),
 							  angle_v_2b.angle() - angle_v_2a.angle());
 	else outline.arcTo(center2.x() - abs,
 					   center2.y() - abs,

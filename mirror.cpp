@@ -19,10 +19,7 @@ mirror::mirror(vector2D start, vector2D end,
 	normal.setY(tangent.x());
 	if (!orient) normal *= -1;
 
-	background = backg;
-	background->add_optic(this);
-
-	setup_pen_and_bruh();
+	setup_pen_and_brush();
 	generate_outline();
 }
 

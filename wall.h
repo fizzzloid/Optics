@@ -14,7 +14,7 @@ class wall : public abstract_optics
 
 		QPair<vector2D *, qint32> intersection_with_ray(ray *) const;
 
-		void setup_pen_and_bruh();
+		void setup_pen_and_brush();
 
 		static const qreal thickness = 0.005;
 	private:

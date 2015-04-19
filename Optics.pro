@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     thin_lense.cpp \
     common_functions.cpp \
     sphere.cpp \
-    real_lense.cpp
+    real_lense.cpp \
+    circle_mirror.cpp
 
 HEADERS  += mainwindow.h \
     ray.h \
@@ -39,4 +40,5 @@ HEADERS  += mainwindow.h \
     thin_lense.h \
     lenses.h \
     sphere.h \
-    real_lense.h
+    real_lense.h \
+    circle_mirror.h

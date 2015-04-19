@@ -13,7 +13,7 @@ wall::wall(vector2D start, vector2D end, field *backg) :
 	normal.setX(tangent.y());
 	normal.setY(-tangent.x());
 
-	setup_pen_and_bruh();
+	setup_pen_and_brush();
 	generate_outline();
 }
 
@@ -40,7 +40,7 @@ void wall::generate_outline()
 	outline.lineTo(p1);
 }
 
-void wall::setup_pen_and_bruh()
+void wall::setup_pen_and_brush()
 {
 	pen.setColor(Qt::darkGray);
 	pen.setWidthF(0.0);

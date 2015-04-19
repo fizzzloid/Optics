@@ -1,6 +1,6 @@
 #include "vector2D.h"
 #include <QtMath>
-
+#include <QDebug>
 vector2D::vector2D(qreal xpos, qreal ypos) : QPointF(xpos, ypos) {}
 vector2D::vector2D(QPointF p) : QPointF(p) {}
 
@@ -34,8 +34,7 @@ vector2D vector2D::operator =(const vector2D &p)
 
 qreal vector2D::angle() const
 {
-	vector2D ort = *this / length();
-	qreal angle = qAsin(ort.y());
-	if (ort.x() < 0) angle += M_PI;
+	qreal angle = qAsin(y() / length());
+	if (x() < 0) angle += M_PI;
 	return qRadiansToDegrees(angle);
 }

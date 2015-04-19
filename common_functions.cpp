@@ -4,6 +4,7 @@
 #include "field.h"
 #include <QPolygonF>
 #include <QtMath>
+#include <QDebug>
 
 vector2D *common_functions::stretch_intersection
 	(vector2D edge_a, vector2D edge_b, ray* r)
@@ -22,7 +23,6 @@ vector2D *common_functions::stretch_intersection
 
 	if (t < 0.00001) return 0; // if ray is starting from the stratch
 							// or after stretch
-
 	vector2D cross = e + d * t;
 
 	// if cross is on the same line with the stratch,
@@ -119,6 +119,8 @@ vector2D *common_functions::intersection_with_arc
 	vector2D e = r->get_emitter_pos() - center;
 	qreal C = d.vect_mult(e);
 
+	radius = qFabs(radius);
+
 	qreal min_dist = qFabs(C);
 	if (min_dist > radius) return 0;
 
@@ -136,14 +138,19 @@ vector2D *common_functions::intersection_with_arc
 
 	if (angle1 != angle2)
 	{
+		angle1 /= angle1.length();
+		angle2 /= angle2.length();
+		vector2D np = p1 / p1.length();
+
 		qreal prj = angle1.scalar_mult(angle2);
 
-		qreal prj1 = angle1.scalar_mult(p1) / p1.length();
-		qreal prj2 = angle2.scalar_mult(p1) / p1.length();
+		qreal prj1 = angle1.scalar_mult(np);
+		qreal prj2 = angle2.scalar_mult(np);
 		if ((prj1 < prj) || (prj2 < prj)) s1 = -1.0;
 
-		prj1 = angle1.scalar_mult(p2);
-		prj2 = angle2.scalar_mult(p2);
+		np = p2 / p2.length();
+		prj1 = angle1.scalar_mult(np);
+		prj2 = angle2.scalar_mult(np);
 		if ((prj1 < prj) || (prj2 < prj)) s2 = -1.0;
 	}
 

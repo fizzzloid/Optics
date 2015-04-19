@@ -18,7 +18,6 @@ class mirror : public abstract_optics
 
 	private:
 		vector2D edge_a, edge_b, normal, tangent;
-		field *background;
 		qreal length;
 
 		void generate_outline();

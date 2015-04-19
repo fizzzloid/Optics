@@ -9,7 +9,7 @@ abstract_optics::abstract_optics(field *backg)
 {
 	background = backg;
 	background->add_optic(this);
-	setup_pen_and_bruh();
+	setup_pen_and_brush();
 }
 
 abstract_optics::~abstract_optics() {}
@@ -40,7 +40,7 @@ QPen abstract_optics::get_pen() const
 	return pen;
 }
 
-void abstract_optics::setup_pen_and_bruh()
+void abstract_optics::setup_pen_and_brush()
 {
 	pen.setColor(Qt::blue);
 	pen.setWidth(2);

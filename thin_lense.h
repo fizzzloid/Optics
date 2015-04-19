@@ -15,7 +15,7 @@ class thin_lense : public abstract_optics
 		QPair<vector2D *, qint32>intersection_with_ray(ray *r) const;
 		ray *generate_ray(ray *r);
 
-		void setup_pen_and_bruh();
+		void setup_pen_and_brush();
 
 	private:
 		vector2D edge_a, edge_b, center, normal, tangent;
