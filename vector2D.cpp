@@ -35,6 +35,6 @@ vector2D vector2D::operator =(const vector2D &p)
 qreal vector2D::angle() const
 {
 	qreal angle = qAsin(y() / length());
-	if (x() < 0) angle += M_PI;
+	if (x() < 0.0) angle = M_PI - angle;
 	return qRadiansToDegrees(angle);
 }

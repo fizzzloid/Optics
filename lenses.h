@@ -5,3 +5,4 @@
 #include "prism.h"
 #include "sphere.h"
 #include "real_lense.h"
+#include "circle_mirror.h"

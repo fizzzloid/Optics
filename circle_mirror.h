@@ -19,11 +19,14 @@ class circle_mirror : public abstract_optics
 
 		void setup_pen_and_brush();
 
+		static const qint32 hatch_count = 15;
+
 	private:
 		void generate_outline();
 
-		qreal R, length, angle_a, angle_b;
-		vector2D center, edge_a, edge_b;
+		qreal R, length, angle_a, angle_b, angle,
+				radians_a, radians;
+		vector2D center, edge_a, edge_b, r_a, r_b;
 };
 
 #endif // CIRCLE_MIRROR_H
