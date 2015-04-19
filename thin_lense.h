@@ -3,6 +3,7 @@
 
 #include <abstractoptics.h>
 #include <vector2D.h>
+#include <QPair>
 class thin_lense : public abstract_optics
 {
 	public:
@@ -11,7 +12,7 @@ class thin_lense : public abstract_optics
 				qreal dioptr, field *backg);
 		~thin_lense();
 
-		vector2D *intersection_with_ray(ray *r) const;
+		QPair<vector2D *, qint32>intersection_with_ray(ray *r) const;
 		ray *generate_ray(ray *r);
 
 		void setup_pen_and_bruh();

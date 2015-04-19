@@ -2,6 +2,7 @@
 #include "lenses.h"
 #include "field.h"
 #include <QList>
+#include <QPair>
 #include <QtMath>
 #include <QDebug>
 
@@ -115,22 +116,25 @@ bool ray::new_intersecting_object()
 	QList<abstract_optics *> opt_list = background->get_optics();
 
 	vector2D *nearest_pos = 0;
+	qint32 part;
 	abstract_optics *nearest_object = 0;
 	qreal nearest = INFINITY;
 
-	vector2D *tmp_pos = 0;
-	abstract_optics *tmp_pointer = 0;
+	QPair<vector2D *, qint32> inter_info;
+	abstract_optics *tmp_opt = 0;
 
 	qint32 l = opt_list.length();
 	for (qint32 i = 0; i < l; i++)
 	{
-		tmp_pointer = opt_list[i];
-		if ((tmp_pos = tmp_pointer->intersection_with_ray(this)) &&
-			(tmp_pos->distance(emitter) < nearest) )
+		tmp_opt = opt_list[i];
+		inter_info = tmp_opt->intersection_with_ray(this);
+		if ((inter_info.first ) &&
+			(inter_info.first->distance(emitter) < nearest) )
 		{
-			nearest = tmp_pos->distance(emitter);
-			nearest_object = tmp_pointer;
-			nearest_pos = tmp_pos;
+			nearest = inter_info.first->distance(emitter);
+			nearest_object = tmp_opt;
+			nearest_pos =inter_info.first;
+			part = inter_info.second;
 		}
 	}
 
@@ -138,6 +142,7 @@ bool ray::new_intersecting_object()
 
 	intersection_object = nearest_object;
 	intersection_point = nearest_pos;
+	intersection_part = part;
 
 	generate_outline();
 	return true;
@@ -151,6 +156,11 @@ abstract_optics *ray::get_intersection_object() const
 vector2D *ray::get_intersection_point() const
 {
 	return intersection_point;
+}
+
+qint32 ray::get_intersection_part() const
+{
+	return intersection_part;
 }
 
  abstract_optics *ray::get_generator() const

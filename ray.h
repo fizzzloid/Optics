@@ -35,6 +35,7 @@ class ray
 		bool new_intersecting_object();
 		abstract_optics *get_intersection_object() const;
 		vector2D *get_intersection_point() const;
+		qint32 get_intersection_part() const;
 
 		abstract_optics *get_generator() const;
 		void set_generator(abstract_optics *o);
@@ -70,6 +71,7 @@ class ray
 
 		abstract_optics *intersection_object;
 		vector2D *intersection_point;
+		qint32 intersection_part;
 
 		abstract_optics *generator;
 		field *background;

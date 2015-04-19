@@ -3,6 +3,7 @@
 
 #include "abstractoptics.h"
 #include "vector2D.h"
+#include <QPair>
 class ray;
 class field;
 
@@ -13,7 +14,7 @@ class sphere : public abstract_optics
 			   qreal index_of_refraction, field *backg);
 		~sphere();
 
-		vector2D *intersection_with_ray(ray *r) const;
+		QPair<vector2D *, qint32>intersection_with_ray(ray *r) const;
 		ray *generate_ray(ray *r);
 
 	private:

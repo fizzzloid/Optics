@@ -5,9 +5,11 @@
 #include <QPainterPath>
 #include <QPen>
 #include <QBrush>
+#include <QPair>
 class vector2D;
 class ray;
 class field;
+
 
 class abstract_optics
 {
@@ -15,7 +17,7 @@ class abstract_optics
 		abstract_optics(field *backg);
 		virtual ~abstract_optics();
 
-		virtual vector2D *intersection_with_ray(ray *) const;
+		virtual QPair<vector2D *, qint32> intersection_with_ray(ray *) const;
 		virtual ray *generate_ray(ray *);
 
 		QPainterPath get_outline() const;

@@ -23,8 +23,7 @@ vector2D *common_functions::stretch_intersection
 	if (t < 0.00001) return 0; // if ray is starting from the stratch
 							// or after stretch
 
-	vector2D cross;
-	cross = e + d * t;
+	vector2D cross = e + d * t;
 
 	// if cross is on the same line with the stratch,
 	// but not between edge_a and edge_b - return 0

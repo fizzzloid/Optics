@@ -19,9 +19,11 @@ wall::wall(vector2D start, vector2D end, field *backg) :
 
 wall::~wall() {}
 
-vector2D *wall::intersection_with_ray(ray *r) const
+QPair<vector2D *, qint32> wall::intersection_with_ray(ray *r) const
 {
-	return common_functions::stretch_intersection(edge_a, edge_b, r);
+	vector2D *v = common_functions::stretch_intersection
+									(edge_a, edge_b, r);
+	return QPair<vector2D *, qint32> (v, 0);
 }
 
 void wall::generate_outline()

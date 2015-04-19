@@ -4,6 +4,7 @@
 #include "ray.h"
 #include "common_functions.h"
 #include <QtMath>
+#include <QPair>
 
 sphere::sphere(vector2D cntr, qreal r,
 			   qreal index_of_refraction, field *backg)
@@ -19,10 +20,11 @@ sphere::sphere(vector2D cntr, qreal r,
 
 sphere::~sphere() {}
 
-vector2D *sphere::intersection_with_ray(ray *r) const
+QPair<vector2D *, qint32> sphere::intersection_with_ray(ray *r) const
 {
-	return common_functions::intersection_with_circle
-			(center, radius, r);
+	vector2D *v = common_functions::intersection_with_circle
+						(center, radius, r);
+	return QPair<vector2D *, qint32>(v, 0);
 }
 
 ray *sphere::generate_ray(ray *r)

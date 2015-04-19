@@ -3,7 +3,8 @@
 #include "ray.h"
 #include "field.h"
 #include <QPainterPath>
-#include <QDebug>
+#include <QPair>
+
 abstract_optics::abstract_optics(field *backg)
 {
 	background = backg;
@@ -13,10 +14,9 @@ abstract_optics::abstract_optics(field *backg)
 
 abstract_optics::~abstract_optics() {}
 
-vector2D *abstract_optics::intersection_with_ray(ray *) const
+QPair<vector2D *, qint32> abstract_optics::intersection_with_ray(ray *) const
 {
-	qDebug() << "abstract";
-	return 0;
+	return QPair<vector2D *, qint32>(0,0);
 }
 
 ray *abstract_optics::generate_ray(ray *)

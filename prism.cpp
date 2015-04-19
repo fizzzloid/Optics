@@ -3,6 +3,7 @@
 #include "ray.h"
 #include "common_functions.h"
 #include <QtMath>
+#include <QPair>
 
 prism::prism(QPolygonF p, qreal index_of_refraction, field *backg)
 	: abstract_optics(backg)
@@ -16,12 +17,13 @@ prism::prism(QPolygonF p, qreal index_of_refraction, field *backg)
 
 prism::~prism() {}
 
-vector2D *prism::intersection_with_ray(ray *r) const
+QPair<vector2D *, qint32> prism::intersection_with_ray(ray *r) const
 {
 	qint32 l = polygon.length();
 	vector2D e = r->get_emitter_pos();
 	vector2D *nearest_intersection = 0;
 	qreal nearest_dist = INFINITY;
+	qint32 part;
 	for(qint32 i = 0; i < l; i++)
 	{
 		vector2D p1 = polygon[i];
@@ -30,12 +32,13 @@ vector2D *prism::intersection_with_ray(ray *r) const
 			common_functions::stretch_intersection(p1, p2, r);
 		if (cur_intersect && (e.distance(*cur_intersect) < nearest_dist))
 		{
+			part = i;
 			nearest_dist = e.distance(*cur_intersect);
 			nearest_intersection = cur_intersect;
 		}
 	}
 
-	return nearest_intersection;
+	return QPair<vector2D *, qint32>(nearest_intersection, part);
 }
 
 ray *prism::generate_ray(ray *r)
@@ -43,21 +46,7 @@ ray *prism::generate_ray(ray *r)
 	if (r->get_intensity() < ray::min_intensity) return 0;
 	if (r->get_intersection_object() != this) return 0;
 	vector2D cross = *r->get_intersection_point();
-
-	qint32 l = polygon.length();
-	qreal min_dist = INFINITY;
-	qint32 cross_num = 0;
-	for (qint32 i = 0; i < l; i++)
-	{
-		qreal dist = common_functions
-				::dist_to_stratch(polygon[i], polygon[(i+1)%l], cross);
-		if (dist < min_dist)
-		{
-			cross_num = i;
-			min_dist = dist;
-		}
-	}
-
+	qint32 cross_num = r->get_intersection_part();
 	return common_functions::generate_prism_ray
 		(cross, normal[cross_num], index_of_refr, r, background);
 }

@@ -5,6 +5,7 @@
 #include "vector2D.h"
 #include <QList>
 #include <QPolygonF>
+#include <QPair>
 class field;
 class ray;
 class prism : public abstract_optics
@@ -13,7 +14,7 @@ class prism : public abstract_optics
 		prism(QPolygonF p, qreal index_of_refraction, field *back);
 		~prism();
 
-		vector2D *intersection_with_ray(ray *r) const;
+		QPair<vector2D *, qint32> intersection_with_ray(ray *r) const;
 		ray *generate_ray(ray *r);
 
 	private:

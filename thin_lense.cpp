@@ -47,9 +47,12 @@ thin_lense::thin_lense(vector2D cntr, vector2D norm, qreal r,
 
 thin_lense::~thin_lense() {}
 
-vector2D *thin_lense::intersection_with_ray(ray *r) const
+QPair<vector2D *, qint32> thin_lense::intersection_with_ray
+		(ray *r) const
 {
-	return common_functions::stretch_intersection(edge_a, edge_b, r);
+	vector2D *v = common_functions::stretch_intersection
+									(edge_a, edge_b, r);
+	return QPair<vector2D *, qint32>(v, 0);
 }
 
 ray *thin_lense::generate_ray(ray *r)

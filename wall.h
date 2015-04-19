@@ -3,6 +3,7 @@
 
 #include "abstractoptics.h"
 #include "vector2D.h"
+#include <QPair>
 #include <QPainterPath>
 
 class wall : public abstract_optics
@@ -11,7 +12,7 @@ class wall : public abstract_optics
 		wall(vector2D start, vector2D end, field *backg);
 		~wall();
 
-		vector2D *intersection_with_ray(ray *) const;
+		QPair<vector2D *, qint32> intersection_with_ray(ray *) const;
 
 		void setup_pen_and_bruh();
 

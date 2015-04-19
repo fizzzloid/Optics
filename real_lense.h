@@ -3,6 +3,7 @@
 
 #include "abstractoptics.h"
 #include "vector2D.h"
+#include <QPair>
 class ray;
 class field;
 
@@ -15,7 +16,7 @@ class real_lense : public abstract_optics
 				   qreal index_of_refraction, field *backg);
 		~real_lense();
 
-		vector2D *intersection_with_ray(ray *) const;
+		QPair<vector2D *, qint32> intersection_with_ray(ray *) const;
 		ray *generate_ray(ray *);
 
 	private:

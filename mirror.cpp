@@ -4,6 +4,8 @@
 #include "common_functions.h"
 #include <QtMath>
 #include <QDebug>
+#include <QPair>
+
 mirror::mirror(vector2D start, vector2D end,
 			   bool orient, field *backg)
 	: abstract_optics(backg)
@@ -26,9 +28,10 @@ mirror::mirror(vector2D start, vector2D end,
 
 mirror::~mirror() {}
 
-vector2D *mirror::intersection_with_ray(ray *r) const
+QPair<vector2D *, qint32> mirror::intersection_with_ray(ray *r) const
 {
-	return common_functions::stretch_intersection(edge_a, edge_b, r);
+	vector2D *v = common_functions::stretch_intersection(edge_a, edge_b, r);
+	return QPair<vector2D *, qint32> (v, 0);
 }
 
 ray *mirror::generate_ray(ray *r)

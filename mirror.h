@@ -3,6 +3,7 @@
 
 #include <abstractoptics.h>
 #include "vector2D.h"
+#include <QPair>
 
 class mirror : public abstract_optics
 {
@@ -10,7 +11,7 @@ class mirror : public abstract_optics
 		mirror(vector2D start, vector2D end, bool orient,  field *backg);
 		~mirror();
 
-		vector2D *intersection_with_ray(ray *r) const;
+		QPair<vector2D *, qint32> intersection_with_ray(ray *r) const;
 		ray *generate_ray(ray *r);
 
 		static const quint32 hatch_count = 15;
