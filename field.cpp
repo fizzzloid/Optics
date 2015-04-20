@@ -2,7 +2,9 @@
 #include "ray.h"
 #include "lenses.h"
 #include <QPainter>
+#include <QKeyEvent>
 #include <QtMath>
+#include <QDebug>
 
 field::field(QWidget *parent) : QWidget(parent)
 {
@@ -18,18 +20,14 @@ field::field(QWidget *parent) : QWidget(parent)
 	rays_pen = new QPen(rays_color, 1.0, Qt::SolidLine);
 	emitter_pen = new QPen(rays_color, 2.0, Qt::SolidLine);
 	emitter_brush = new QBrush(rays_color, Qt::SolidPattern);
+
+	setMouseTracking(true);
+	mouse_inside = false;
 }
 
-field::~field()
-{
-	clear();
-}
-
-QList<ray *> field::get_rays() const
-{ return rays; }
-
-QList<abstract_optics *> field::get_optics() const
-{ return optics; }
+field::~field() { clear(); }
+QList<ray *> field::get_rays() const { return rays; }
+QList<abstract_optics *> field::get_optics() const { return optics; }
 
 void field::add_ray(ray *r)
 {
@@ -43,15 +41,8 @@ void field::add_optic(abstract_optics *o)
 		optics.append(o);
 }
 
-void field::delete_ray(ray *r)
-{
-	rays.removeOne(r);
-}
-
-void field::delete_optic(abstract_optics *o)
-{
-	optics.removeOne(o);
-}
+void field::delete_ray(ray *r) { rays.removeOne(r); }
+void field::delete_optic(abstract_optics *o) { optics.removeOne(o); }
 
 void field::clear()
 {
@@ -73,10 +64,10 @@ void field::recalc()
 {
 	qint32 l = rays.length();
 	for (qint32 i = 0; i < l; i++)
-		recalc_ray_on(i);
+		recalc_ray_num(i);
 }
 
-void field::recalc_ray_on(qint32 n)
+void field::recalc_ray_num(qint32 n)
 {
 	if (n >= rays.length()) return;
 
@@ -93,6 +84,75 @@ void field::recalc_ray_on(qint32 n)
 		}
 		cur_ray = cur_ray->get_child();
 	}
+}
+
+void field::scale_change(qint32 new_sc, QPointF *center)
+{
+	qreal old_sc = scale;
+
+	if (!center)
+	{
+		center = new QPointF;
+		center->setX(corner.x() + width() / (2 * scale));
+		center->setY(corner.y() + height() / (2 * scale));
+	}
+	scale_step = new_sc;
+	scale = 1000*qPow(scale_base, (qreal) new_sc);
+
+	QPointF new_corner( *center
+						+ (corner - *center) * old_sc / scale);
+	corner_change(new_corner.x(), new_corner.y());
+}
+
+void field::corner_change(qreal x, qreal y)
+{
+	corner.setX(x);
+	corner.setY(y);
+}
+
+void field::scale_turn(qint32 increment, QPointF *center)
+{
+	scale_change(scale_step + increment, center);
+}
+
+void field::corner_turn(qreal incx, qreal incy)
+{
+	corner.setX(corner.x() + incx);
+	corner.setY(corner.y() + incy);
+}
+
+void field::scaled_corner_turn(qreal incx, qreal incy)
+{
+	corner_turn(incx / scale, incy / scale);
+}
+
+QPointF field::get_corner() const {	return corner; }
+
+void field::set_index_of_refraction(qreal i)
+{
+	index_of_refr = i;
+	recalc();
+}
+
+qreal field::get_index_of_refraction() const { return index_of_refr; }
+
+quint32 field::rays_count() const
+{
+	qint32 l = rays.length();
+	qint32 i = 0;
+	quint32 result = 0;
+	bool f = (i < l);
+	ray *cur_ray;
+	if (f) cur_ray = rays[0];
+	while (f)
+	{
+		result++;
+		cur_ray = cur_ray->get_child();
+		if (!cur_ray)
+			if (f = (++i) < l) cur_ray = rays[i];
+	}
+
+	return result;
 }
 
 void field::paintEvent(QPaintEvent *)
@@ -147,55 +207,80 @@ void field::paintEvent(QPaintEvent *)
 	}
 }
 
-void field::scale_change(qint32 sc_st)
+void field::keyPressEvent(QKeyEvent *ke)
 {
-	scale_step = sc_st;
-	scale = 1000*qPow(scale_base, (qreal) sc_st);
-}
-
-void field::corner_change(qreal x, qreal y)
-{
-	corner.setX(x);
-	corner.setY(y);
-}
-
-void field::scale_turn(qint32 increment)
-{
-	scale_change(scale_step + increment);
-}
-
-void field::corner_turn(qreal incx, qreal incy)
-{
-	corner.setX(corner.x() + incx);
-	corner.setY(corner.y() + incy);
-}
-
-qreal field::get_index_of_refraction() const
-{
-	return index_of_refr;
-}
-
-void field::set_index_of_refraction(qreal i)
-{
-	index_of_refr = i;
-	recalc();
-}
-
-quint32 field::rays_count() const
-{
-	qint32 l = rays.length();
-	qint32 i = 0;
-	quint32 result = 0;
-	bool f = (i < l);
-	ray *cur_ray;
-	if (f) cur_ray = rays[0];
-	while (f)
+	switch (ke->key())
 	{
-		result++;
-		cur_ray = cur_ray->get_child();
-		if (!cur_ray)
-			if (f = (++i) < l) cur_ray = rays[i];
+	case Qt::Key_Up:
+		scaled_corner_turn(0, height() * turn_koeff);
+		update();
+		break;
+
+	case Qt::Key_Down:
+		scaled_corner_turn(0, -height() * turn_koeff);
+		update();
+		break;
+	case Qt::Key_Left:
+		scaled_corner_turn(-width() * turn_koeff, 0);
+		update();
+		break;
+	case Qt::Key_Right:
+		scaled_corner_turn(width() * turn_koeff, 0);
+		update();
+		break;
+
+	case Qt::Key_Equal:
+	case Qt::Key_Plus:
+		scale_turn(1.0);
+		update();
+		break;
+	case Qt::Key_Minus:
+		scale_turn(-1.0);
+		update();
+		break;
+
+	default:
+		break;
 	}
 
-	return result;
+}
+
+void field::enterEvent(QEvent *) { mouse_inside = true; }
+void field::leaveEvent(QEvent *) { mouse_inside = false; }
+
+void field::wheelEvent(QWheelEvent *we)
+{
+	QPointF *center = new QPointF;
+	center->setX(corner.x() + we->x() / scale);
+	center->setY(corner.y() + (height() - we->y()) / scale);
+	scale_turn(0.01*we->delta(), center);
+	update();
+}
+
+void field::mouseMoveEvent(QMouseEvent *me)
+{
+	QPointF delta;
+	delta.setX( me->x() - mouse_click_pos.x() );
+	delta.setY( me->y() - mouse_click_pos.y() );
+	delta /= scale;
+	if (me->buttons())
+	{
+		corner_turn(- delta.x(), delta.y());
+	}
+
+	mouse_click_pos.setX(me->x());
+	mouse_click_pos.setY(me->y());
+	update();
+}
+
+void field::mousePressEvent(QMouseEvent *me)
+{
+	mouse_click_pos.setX(me->x());
+	mouse_click_pos.setY(me->y());
+	setCursor(Qt::ClosedHandCursor);
+}
+
+void field::mouseReleaseEvent(QMouseEvent *)
+{
+	unsetCursor();
 }

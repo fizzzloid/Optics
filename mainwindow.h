@@ -6,6 +6,7 @@
 class QVBoxLayout;
 class field;
 class QPushButton;
+class QKeyEvent;
 
 class MainWindow : public QMainWindow
 {
@@ -14,12 +15,12 @@ class MainWindow : public QMainWindow
 	public:
 		MainWindow(QWidget *parent = 0);
 
+	public slots:
+		void keyPressEvent(QKeyEvent *ke);
+
 	private:
-		field *mainfield;
-		QPushButton *left_btn;
-		QPushButton *right_btn;
-		QPushButton *up_btn;
-		QPushButton *down_btn;
+		field *active_field;
+
 };
 
 #endif // MAINWINDOW_H

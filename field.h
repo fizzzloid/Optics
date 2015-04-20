@@ -6,9 +6,12 @@
 
 class ray;
 class abstract_optics;
+class QPointF;
 class QPainter;
 class QPaintEvent;
-class QPointF;
+class QKeyEvent;
+class QEvent;
+class QWheelEvent;
 
 class field : public QWidget
 {
@@ -27,11 +30,13 @@ class field : public QWidget
 		void clear();
 
 		void recalc();
-		void recalc_ray_on(qint32 n);
-		void scale_change(qint32 sc_st);
+		void recalc_ray_num(qint32 n);
+		void scale_change(qint32 new_sc, QPointF *center = 0);
 		void corner_change(qreal x, qreal y);
-		void scale_turn(qint32 increment);
+		void scale_turn(qint32 increment, QPointF *center = 0);
 		void corner_turn(qreal incx, qreal incy);
+		void scaled_corner_turn(qreal incx, qreal incy);
+		QPointF get_corner() const;
 
 		void set_index_of_refraction(qreal i);
 		qreal get_index_of_refraction() const;
@@ -40,6 +45,13 @@ class field : public QWidget
 
 	public slots:
 		void paintEvent(QPaintEvent *);
+		void keyPressEvent(QKeyEvent *ke);
+		void enterEvent(QEvent *);
+		void leaveEvent(QEvent *);
+		void wheelEvent(QWheelEvent *we);
+		void mouseMoveEvent(QMouseEvent *me);
+		void mousePressEvent(QMouseEvent *me);
+		void mouseReleaseEvent(QMouseEvent *);
 
 	private:
 		QList<ray *> rays;
@@ -56,7 +68,11 @@ class field : public QWidget
 		QBrush *background_brush;
 		qreal index_of_refr;
 
+		bool mouse_inside;
+		QPoint mouse_click_pos;
+
 		static const qreal scale_base = 1.3;
+		static const qreal turn_koeff = 0.1;
 };
 
 #endif // FIELD_H

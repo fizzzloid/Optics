@@ -12,15 +12,15 @@ circle_mirror::circle_mirror(vector2D a, vector2D b,
 	edge_b = b;
 
 
-	vector2D tang(edge_b - edge_a);
-	qreal dist = tang.length();
-	tang /= dist;
+	main_tangent = edge_b - edge_a;
+	qreal dist = main_tangent.length();
+	main_tangent /= dist;
 	if (2*qFabs(radius) > dist ) R = radius;
 	else if (radius > 0) R = 0.50001*dist;
 	else R = - 0.50001*dist ;
 
 
-	vector2D n(-tang.y(), tang.x());
+	vector2D n(-main_tangent.y(), main_tangent.x());
 
 	center = 0.5 * (edge_a + edge_b);
 	if (R > 0)
@@ -60,12 +60,10 @@ ray *circle_mirror::generate_ray(ray *r)
 	if (r->get_intersection_object() != this) return 0;
 
 	vector2D cross = *r->get_intersection_point();
-	vector2D tangent = edge_b - edge_a;
-	tangent /= tangent.length();
 	vector2D normal = (cross - center) / R;
 	vector2D dir = r->get_direction_vect();
 	// if ray is coming from "black" side of mirror
-	if (tangent.vect_mult(edge_b - edge_a) >= 0.0) return 0;
+	if (main_tangent.vect_mult(dir) >= 0.0) return 0;
 
 	vector2D new_dir = dir;
 	new_dir -= 2 * normal * normal.scalar_mult(dir);

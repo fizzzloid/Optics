@@ -26,7 +26,7 @@ class circle_mirror : public abstract_optics
 
 		qreal R, length, angle_a, angle_b, angle,
 				radians_a, radians;
-		vector2D center, edge_a, edge_b, r_a, r_b;
+		vector2D center, edge_a, edge_b, r_a, r_b, main_tangent;
 };
 
 #endif // CIRCLE_MIRROR_H
