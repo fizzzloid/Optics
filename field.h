@@ -36,12 +36,15 @@ class field : public QWidget
 		void scale_turn(qint32 increment, QPointF *center = 0);
 		void corner_turn(qreal incx, qreal incy);
 		void scaled_corner_turn(qreal incx, qreal incy);
+		qreal get_scale() const;
 		QPointF get_corner() const;
 
 		void set_index_of_refraction(qreal i);
 		qreal get_index_of_refraction() const;
 
 		quint32 rays_count() const;
+
+		void show_grid(bool show);
 
 	public slots:
 		void paintEvent(QPaintEvent *);
@@ -53,7 +56,12 @@ class field : public QWidget
 		void mousePressEvent(QMouseEvent *me);
 		void mouseReleaseEvent(QMouseEvent *);
 
+	signals:
+		void something_changed();
+
 	private:
+		void paintRay(qint32 num, QPainter *painter);
+
 		QList<ray *> rays;
 		QList<abstract_optics *> optics;
 
@@ -70,6 +78,8 @@ class field : public QWidget
 
 		bool mouse_inside;
 		QPoint mouse_click_pos;
+
+		bool grid_visible;
 
 		static const qreal scale_base = 1.3;
 		static const qreal turn_koeff = 0.1;

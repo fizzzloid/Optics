@@ -7,6 +7,7 @@ class QVBoxLayout;
 class field;
 class QPushButton;
 class QKeyEvent;
+class QLabel;
 
 class MainWindow : public QMainWindow
 {
@@ -17,10 +18,13 @@ class MainWindow : public QMainWindow
 
 	public slots:
 		void keyPressEvent(QKeyEvent *ke);
+		void status_changed();
 
 	private:
-		field *active_field;
+		void setup_statusbar();
 
+		field *active_field;
+		QLabel *navigation_label;
 };
 
 #endif // MAINWINDOW_H

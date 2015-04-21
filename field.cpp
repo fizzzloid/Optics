@@ -23,6 +23,9 @@ field::field(QWidget *parent) : QWidget(parent)
 
 	setMouseTracking(true);
 	mouse_inside = false;
+	grid_visible = true;
+
+	emit something_changed();
 }
 
 field::~field() { clear(); }
@@ -102,6 +105,7 @@ void field::scale_change(qint32 new_sc, QPointF *center)
 	QPointF new_corner( *center
 						+ (corner - *center) * old_sc / scale);
 	corner_change(new_corner.x(), new_corner.y());
+
 }
 
 void field::corner_change(qreal x, qreal y)
@@ -126,6 +130,7 @@ void field::scaled_corner_turn(qreal incx, qreal incy)
 	corner_turn(incx / scale, incy / scale);
 }
 
+qreal field::get_scale() const { return scale; }
 QPointF field::get_corner() const {	return corner; }
 
 void field::set_index_of_refraction(qreal i)
@@ -155,6 +160,16 @@ quint32 field::rays_count() const
 	return result;
 }
 
+void field::show_grid(bool show)
+{
+	if (show != grid_visible)
+	{
+		grid_visible = show;
+		update(); emit something_changed();
+	}
+
+}
+
 void field::paintEvent(QPaintEvent *)
 {
 	QPainter painter(this);
@@ -165,7 +180,7 @@ void field::paintEvent(QPaintEvent *)
 	painter.scale(scale, -scale);
 
 	// grid
-	if (true)
+	if (grid_visible)
 	{
 
 		static const qreal ln_10 = 2.302585092994046;
@@ -217,33 +232,9 @@ void field::paintEvent(QPaintEvent *)
 
 	// rays
 	qint32 l = rays.length();
-	qint32 i = 0;
-	bool f = i < l;
-	ray *cur_ray;
-	if (f) cur_ray = rays[i];
-	while (f)
-	{
-		if (1)//!cur_ray->get_parent())
-		{
-			QPen e_pen = cur_ray->get_emitter_pen();
-			qreal r = cur_ray->get_emitter_radius() / scale;
-			e_pen.setWidthF(e_pen.widthF()/scale);
-			painter.setBrush(cur_ray->get_emitter_brush());
-			painter.setPen(e_pen);
-			painter.drawEllipse(cur_ray->get_emitter_pos(),r, r);
-		}
-		QPen r_pen = cur_ray->get_pen();
-		r_pen.setWidthF(r_pen.widthF()/scale);
-		painter.setPen(r_pen);
-		painter.drawPath(cur_ray->get_path());
+	for (qint32 i = 0; i < l; i++)
+		paintRay(i, &painter);
 
-		if (cur_ray->get_child()) cur_ray = cur_ray->get_child();
-		else
-		{
-			f = ++i < l;
-			if (f) cur_ray = rays[i];
-		}
-	}
 
 	// optics
 	l = optics.length();
@@ -265,30 +256,30 @@ void field::keyPressEvent(QKeyEvent *ke)
 	{
 	case Qt::Key_Up:
 		scaled_corner_turn(0, height() * turn_koeff);
-		update();
+		update(); emit something_changed();
 		break;
 
 	case Qt::Key_Down:
 		scaled_corner_turn(0, -height() * turn_koeff);
-		update();
+		update(); emit something_changed();
 		break;
 	case Qt::Key_Left:
 		scaled_corner_turn(-width() * turn_koeff, 0);
-		update();
+		update(); emit something_changed();
 		break;
 	case Qt::Key_Right:
 		scaled_corner_turn(width() * turn_koeff, 0);
-		update();
+		update(); emit something_changed();
 		break;
 
 	case Qt::Key_Equal:
 	case Qt::Key_Plus:
 		scale_turn(1.0);
-		update();
+		update(); emit something_changed();
 		break;
 	case Qt::Key_Minus:
 		scale_turn(-1.0);
-		update();
+		update(); emit something_changed();
 		break;
 
 	default:
@@ -306,7 +297,7 @@ void field::wheelEvent(QWheelEvent *we)
 	center->setX(corner.x() + we->x() / scale);
 	center->setY(corner.y() + (height() - we->y()) / scale);
 	scale_turn(0.01*we->delta(), center);
-	update();
+	update(); emit something_changed();
 }
 
 void field::mouseMoveEvent(QMouseEvent *me)
@@ -318,7 +309,7 @@ void field::mouseMoveEvent(QMouseEvent *me)
 	if (me->buttons() & Qt::LeftButton)
 	{
 		corner_turn(- delta.x(), delta.y());
-		update();
+		update(); emit something_changed();
 	}
 
 	mouse_click_pos.setX(me->x());
@@ -336,4 +327,29 @@ void field::mousePressEvent(QMouseEvent *me)
 void field::mouseReleaseEvent(QMouseEvent *)
 {
 	unsetCursor();
+}
+
+void field::paintRay(qint32 num, QPainter *painter)
+{
+	ray *cur_ray = rays[num];
+	while (cur_ray)
+	{
+		if (!cur_ray->get_parent())
+		{
+			QPen e_pen = cur_ray->get_emitter_pen();
+			qreal r = cur_ray->get_emitter_radius() / scale;
+			e_pen.setWidthF(e_pen.widthF()/scale);
+			painter->setBrush(cur_ray->get_emitter_brush());
+			painter->setPen(e_pen);
+			painter->drawEllipse(cur_ray->get_emitter_pos(),r, r);
+		}
+
+		QPen r_pen = cur_ray->get_pen();
+		r_pen.setWidthF(r_pen.widthF()/scale);
+		painter->setPen(r_pen);
+		painter->drawPath(cur_ray->get_path());
+
+		cur_ray = cur_ray->get_child();
+	}
+
 }
