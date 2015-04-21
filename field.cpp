@@ -164,6 +164,57 @@ void field::paintEvent(QPaintEvent *)
 	painter.translate(-corner.x()*scale, corner.y()*scale + height());
 	painter.scale(scale, -scale);
 
+	// grid
+	if (true)
+	{
+
+		static const qreal ln_10 = 2.302585092994046;
+		qreal lines_dist =  qPow(10.0, 2 - (qint32) (qLn(scale)/ln_10));
+
+		qint32 h_lines_count = 2 + height() / (scale * lines_dist);
+		qreal first_line_y = ( (int) (corner.y() / lines_dist) - 1)
+				* lines_dist;
+
+		qint32 v_lines_count = 2 + width() / (scale * lines_dist);
+		qreal first_line_x = ( (int) (corner.x() / lines_dist) - 1)
+				* lines_dist;
+
+		QColor grid_color;
+		grid_color.setRgb(32,32,32);
+		painter.setPen(QPen(grid_color, 0, Qt::SolidLine));
+		for (qint32 i = 0; i < h_lines_count * 10; i++)
+		{
+			qreal y = first_line_y + i * lines_dist * 0.1;
+			painter.drawLine(QPointF(corner.x(), y),
+							 QPointF(corner.x() + width() / scale, y));
+
+		}
+
+		painter.setPen(QPen(grid_color, 0, Qt::SolidLine));
+		for (qint32 i = 0; i < v_lines_count * 10; i++)
+		{
+			qreal x = first_line_x + i * lines_dist * 0.1;
+			painter.drawLine(QPointF(x, corner.y()),
+							 QPointF(x, corner.y() + height() / scale));
+		}
+
+		grid_color.setRgb(150, 150, 150);
+		painter.setPen(QPen(grid_color, 2/scale, Qt::SolidLine));
+		for (qint32 i = 0; i < h_lines_count; i++)
+		{
+			qreal y = first_line_y + i * lines_dist;
+			painter.drawLine(QPointF(corner.x(), y),
+							 QPointF(corner.x() + width() / scale, y));
+		}
+
+		for (qint32 i = 0; i < v_lines_count; i++)
+		{
+			qreal x = first_line_x + i * lines_dist;
+			painter.drawLine(QPointF(x, corner.y()),
+							 QPointF(x, corner.y() + height() / scale));
+		}
+	}
+
 	// rays
 	qint32 l = rays.length();
 	qint32 i = 0;
@@ -172,7 +223,7 @@ void field::paintEvent(QPaintEvent *)
 	if (f) cur_ray = rays[i];
 	while (f)
 	{
-		if (!cur_ray->get_parent())
+		if (1)//!cur_ray->get_parent())
 		{
 			QPen e_pen = cur_ray->get_emitter_pen();
 			qreal r = cur_ray->get_emitter_radius() / scale;
@@ -205,6 +256,7 @@ void field::paintEvent(QPaintEvent *)
 		painter.setBrush(cur_opt->get_brush());
 		painter.drawPath(cur_opt->get_outline());
 	}
+
 }
 
 void field::keyPressEvent(QKeyEvent *ke)
@@ -263,21 +315,22 @@ void field::mouseMoveEvent(QMouseEvent *me)
 	delta.setX( me->x() - mouse_click_pos.x() );
 	delta.setY( me->y() - mouse_click_pos.y() );
 	delta /= scale;
-	if (me->buttons())
+	if (me->buttons() & Qt::LeftButton)
 	{
 		corner_turn(- delta.x(), delta.y());
+		update();
 	}
 
 	mouse_click_pos.setX(me->x());
 	mouse_click_pos.setY(me->y());
-	update();
 }
 
 void field::mousePressEvent(QMouseEvent *me)
 {
 	mouse_click_pos.setX(me->x());
 	mouse_click_pos.setY(me->y());
-	setCursor(Qt::ClosedHandCursor);
+	 if (me->buttons() & Qt::LeftButton)
+		 setCursor(Qt::ClosedHandCursor);
 }
 
 void field::mouseReleaseEvent(QMouseEvent *)

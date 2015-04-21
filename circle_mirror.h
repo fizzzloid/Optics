@@ -24,9 +24,10 @@ class circle_mirror : public abstract_optics
 	private:
 		void generate_outline();
 
+		bool black_inside;
 		qreal R, length, angle_a, angle_b, angle,
 				radians_a, radians;
-		vector2D center, edge_a, edge_b, r_a, r_b, main_tangent;
+		vector2D center, edge_a, edge_b, r_a, r_b;
 };
 
 #endif // CIRCLE_MIRROR_H

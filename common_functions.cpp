@@ -116,6 +116,8 @@ vector2D *common_functions::intersection_with_arc
 			 vector2D angle1, vector2D angle2)
 {
 	vector2D d = r->get_direction_vect();
+
+	// !!!center of circle is tranposing to (0,0)!!!
 	vector2D e = r->get_emitter_pos() - center;
 	qreal C = d.vect_mult(e);
 
@@ -142,16 +144,18 @@ vector2D *common_functions::intersection_with_arc
 		angle2 /= angle2.length();
 		vector2D np = p1 / p1.length();
 
-		qreal prj = angle1.scalar_mult(angle2);
+		qreal sin = angle1.vect_mult(angle2);
 
-		qreal prj1 = angle1.scalar_mult(np);
-		qreal prj2 = angle2.scalar_mult(np);
-		if ((prj1 < prj) || (prj2 < prj)) s1 = -1.0;
+		qreal sin1 = angle1.vect_mult(np);
+		qreal sin2 = angle2.vect_mult(np);
+		if ((sin1 * sin < 0) || (sin2 * sin > 0))
+			s1 = -1.0;
 
 		np = p2 / p2.length();
-		prj1 = angle1.scalar_mult(np);
-		prj2 = angle2.scalar_mult(np);
-		if ((prj1 < prj) || (prj2 < prj)) s2 = -1.0;
+		sin1 = angle1.vect_mult(np);
+		sin2 = angle2.vect_mult(np);
+		if ((sin1 * sin < 0) || (sin2 * sin > 0))
+			s2 = -1.0;
 	}
 
 	// if emitter is on the edge of lense

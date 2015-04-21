@@ -6,6 +6,7 @@ class ray;
 class QPolygonF;
 class QPointF;
 class field;
+class QPainterPath;
 #include <QtGlobal>
 
 namespace common_functions

@@ -21,7 +21,7 @@ class real_lense : public abstract_optics
 
 	private:
 		void generate_outline();
-		qreal thick, R1, R2, index_of_refr, length;
+		qreal thick, R1, R2, index_of_refr, length, angle1, angle2;
 		vector2D edge_a, edge_b, center1, center2,
 				 normal, tangent, center0,
 				 angle_v_1a, angle_v_1b, angle_v_2a, angle_v_2b,

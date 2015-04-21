@@ -16,17 +16,17 @@ real_lense::real_lense(vector2D a, vector2D b,
 	edge_a = a;
 	edge_b = b;
 	length = edge_a.distance(edge_b);
-	center0 = (edge_b + edge_a) / 2.0;
+	center0 = 0.5 * (edge_b + edge_a);
 	normal = (edge_b - edge_a) / length;
 
-	// Not two. Because.
+	// Not 1/2. Because.
 	if (2 * qFabs(radius1) >= length) R1 = radius1;
-	else if (radius1 >= 0) R1 = length / 1.99999;
-	else R1 = - length / 1.99999;
+	else if (radius1 >= 0) R1 = length * 0.500001;
+	else R1 = - length / 0.500001;
 
 	if (2 * qFabs(radius2) >= length) R2 = radius2;
-	else if (radius2 >= 0) R2 = length / 1.99999;
-	else R2 = - length / 1.99999;
+	else if (radius2 >= 0) R2 = length / 0.500001;
+	else R2 = - length / 0.500001;
 	thick = thicknes;
 	index_of_refr = index_of_refraction;
 
@@ -53,6 +53,14 @@ real_lense::real_lense(vector2D a, vector2D b,
 	angle_v_1b = corner_1b - center1;
 	angle_v_2a = corner_2a - center2;
 	angle_v_2b = corner_2b - center2;
+
+	angle1 = angle_v_1a.angle() - angle_v_1b.angle();
+	if (angle1 > 180.0) angle1 -= 360.0;
+	else if (angle1 < -180.0) angle1 += 360.0;
+
+	angle2 = angle_v_2b.angle() - angle_v_2a.angle();
+	if (angle2 > 180.0) angle2 -= 360.0;
+	else if (angle2 < -180) angle2 +=360;
 
 	setup_pen_and_brush();
 	generate_outline();
@@ -129,24 +137,9 @@ void real_lense::generate_outline()
 //	outline.lineTo(corner_1a);
 
 	qreal abs = qFabs(R1);
-	if (R1 >= 0) outline.arcTo(center1.x() - abs,
-							center1.y() - abs,
-							2*abs, 2*abs,  angle_v_1a.angle(),
-							angle_v_1b.angle() - angle_v_1a.angle());
-	else outline.arcTo(center1.x() - abs,
-					  center1.y() - abs,
-					  2*abs, 2*abs,  -angle_v_1a.angle(),
-					  angle_v_1a.angle() - angle_v_1b.angle());
-
-//	outline.lineTo(corner_2b);
-	abs  = qFabs(R2);
-	if (R2 >= 0) outline.arcTo(center2.x() - abs,
-							  center2.y() - abs,
-							  2*abs, 2*abs, -angle_v_2b.angle(),
-							  angle_v_2b.angle() - angle_v_2a.angle());
-	else outline.arcTo(center2.x() - abs,
-					   center2.y() - abs,
-					   2*abs, 2*abs, angle_v_2b.angle(),
-					   angle_v_2a.angle() - angle_v_2b.angle());
-
+	outline.arcTo(center1.x() - abs, center1.y() - abs,
+				  2*abs, 2*abs, -angle_v_1a.angle(), angle1);
+	abs = qFabs(R2);
+	outline.arcTo(center2.x() - abs, center2.y() - abs,
+				  2*abs, 2*abs, -angle_v_2b.angle(), angle2);
 }
