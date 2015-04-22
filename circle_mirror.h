@@ -17,6 +17,7 @@ class circle_mirror : public abstract_optics
 		QPair<vector2D *, qint32> intersection_with_ray(ray *r) const;
 		ray *generate_ray(ray *r);
 
+		qreal get_distance_to_point(vector2D p) const;
 		void setup_pen_and_brush();
 
 		static const qint32 hatch_count = 15;

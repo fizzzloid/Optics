@@ -51,6 +51,22 @@ ray *prism::generate_ray(ray *r)
 		(cross, normal[cross_num], index_of_refr, r, background);
 }
 
+qreal prism::get_distance_to_point(vector2D p) const
+{
+	if (test_ray(p, vector2D(1.0,0.0)))
+		return 0.0; // point is inside
+
+	qint32 l = polygon.length();
+	qreal min = INFINITY;
+	for (qint32 i = 0; i < l; i++)
+	{
+		qreal dist = common_functions::dist_to_stratch
+				(polygon[i], polygon[(i+1)%l], p);
+		if (dist < min) min = dist;
+	}
+	return min;
+}
+
 void prism::calculate_geometry()
 {
 	qint32 l = polygon.length();
@@ -62,24 +78,8 @@ void prism::calculate_geometry()
 	n1.setX(-t.y());
 	n1.setY(t.x());
 
-	qint32 count = 0;
-	ray *trial_ray =
-			new ray(e1.x(), e1.y(), n1, background);
-
-	for (qint32 i = 0; i < l; i++)
-	{
-		vector2D p1 = polygon[i];
-		vector2D p2 = polygon[(i+1)%l];
-
-		if (common_functions::stretch_intersection(p1, p2, trial_ray))
-			count++;
-	}
-
-	background->delete_ray(trial_ray);
-	delete trial_ray;
-
 	qint32 sign;
-	if (count%2) sign = -1;
+	if (test_ray(e1, n1)) sign = -1;
 	else sign = 1;
 
 	for (qint32 i = 0; i < l; i++)
@@ -88,6 +88,26 @@ void prism::calculate_geometry()
 		vector2D n(-sign * tangent.y(), sign*tangent.x());
 		normal.append(n / n.length());
 	}
+}
+
+bool prism::test_ray(vector2D start, vector2D dir) const
+{
+	ray *trial_ray =
+			new ray(start.x(), start.y(), dir, 0);
+
+	qint32 l = polygon.length();
+	qint32 count = 0;
+	for (qint32 i = 0; i < l; i++)
+	{
+		vector2D p1 = polygon[i];
+		vector2D p2 = polygon[(i+1)%l];
+
+		if (common_functions::stretch_intersection(p1, p2, trial_ray))
+			count++;
+	}
+	delete trial_ray;
+
+	return count%2;
 }
 
 void prism::generate_outline()

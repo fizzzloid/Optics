@@ -122,7 +122,8 @@ ray *real_lense::generate_ray(ray *r)
 		n = (cross - center2) / R2;
 		break;
 	default:
-		qDebug() << "something wrong: ray is intersecting non-existin part!";
+		qDebug() << "something wrong:"
+				 << "ray is intersecting non-existing part!";
 		return 0;
 		break;
 	}
@@ -131,15 +132,35 @@ ray *real_lense::generate_ray(ray *r)
 			(cross, n, index_of_refr, r, background);
 }
 
+qreal real_lense::get_distance_to_point(vector2D p) const
+{
+	qreal d1 = center1.distance(p) - qFabs(R1);
+	qreal d2 = center2.distance(p) - qFabs(R2);
+	bool f1 = (d1 <= 0.0) xor (R1 < 0.0);
+	bool f2 = (d2 <= 0.0) xor (R2 < 0.0);
+	bool f3 = vector2D(p - edge_a).scalar_mult(normal) >= 0;
+	bool f4 = vector2D(p - edge_b).scalar_mult(normal) <= 0;
+
+	if (f1 && f2 && f3 && f4) return 0.0;
+
+	if (!f3) return common_functions::dist_to_stratch
+					(corner_1a, corner_2a, p);
+	else if (!f4) return common_functions::dist_to_stratch
+					(corner_1b, corner_2b, p);
+	else if (!f1) return qFabs(d1);
+	else return qFabs(d2);
+
+	return INFINITY;
+}
+
 void real_lense::generate_outline()
 {
-	outline.moveTo(corner_2a);
-//	outline.lineTo(corner_1a);
-
+	outline.moveTo(corner_1a);
 	qreal abs = qFabs(R1);
 	outline.arcTo(center1.x() - abs, center1.y() - abs,
 				  2*abs, 2*abs, -angle_v_1a.angle(), angle1);
 	abs = qFabs(R2);
 	outline.arcTo(center2.x() - abs, center2.y() - abs,
 				  2*abs, 2*abs, -angle_v_2b.angle(), angle2);
+	outline.lineTo(corner_1a);
 }

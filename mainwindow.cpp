@@ -25,11 +25,11 @@ MainWindow::MainWindow(QWidget *parent)
 	new thin_lense(vector2D(0.6, 0.4), vector2D(0.65, 0.6),
 				   6, active_field);
 	new real_lense(vector2D(0.5, 0.4), vector2D(0.55, 0.6),
-				   0.01, 0.4, 0.4, 2.0, active_field);
+				   0.01, -0.7, 0.2, 1.7, active_field);
 
 	QPolygonF polygon;
 	polygon << common_functions::regular_polygon
-			   (vector2D(0.4, 0.0), 0.2, 8);
+			   (vector2D(0.4, 0.0), 0.2, 8) << vector2D(0.4, 0.1);
 	new prism(polygon, 1.7, active_field);
 
 	active_field->recalc();

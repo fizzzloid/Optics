@@ -19,6 +19,8 @@ class real_lense : public abstract_optics
 		QPair<vector2D *, qint32> intersection_with_ray(ray *) const;
 		ray *generate_ray(ray *);
 
+		qreal get_distance_to_point(vector2D p) const;
+
 	private:
 		void generate_outline();
 		qreal thick, R1, R2, index_of_refr, length, angle1, angle2;
@@ -26,7 +28,6 @@ class real_lense : public abstract_optics
 				 normal, tangent, center0,
 				 angle_v_1a, angle_v_1b, angle_v_2a, angle_v_2b,
 				 corner_1a, corner_1b, corner_2a, corner_2b;
-
 };
 
 #endif // REAL_LENSE_H

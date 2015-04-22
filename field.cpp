@@ -91,6 +91,8 @@ void field::recalc_ray_num(qint32 n)
 
 void field::scale_change(qint32 new_sc, QPointF *center)
 {
+	if ((new_sc < -30) || (new_sc > 30)) return;
+
 	qreal old_sc = scale;
 
 	if (!center)
@@ -191,9 +193,7 @@ void field::paintEvent(QPaintEvent *)
 	// optics
 	l = optics.length();
 	for (qint32 i = 0; i < l; i++)
-	{
 		paintOptic(i, &painter, selected_optics.contains(i));
-			}
 
 }
 
@@ -331,10 +331,10 @@ void field::paintGrid(QPainter *painter) const
 {
 		static const qreal ln_10 = 2.302585092994046;
 		qreal lines_dist =  qPow(10.0, 2 - (qint32) (qLn(scale)/ln_10));
-		qint32 h_lines_count = 2 + height() / (scale * lines_dist);
+		qint32 h_lines_count = 3 + height() / (scale * lines_dist);
 		qreal first_line_y = ( (int) (corner.y() / lines_dist) - 1)
 				* lines_dist;
-		qint32 v_lines_count = 2 + width() / (scale * lines_dist);
+		qint32 v_lines_count = 3 + width() / (scale * lines_dist);
 		qreal first_line_x = ( (int) (corner.x() / lines_dist) - 1)
 				* lines_dist;
 

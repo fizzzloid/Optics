@@ -40,6 +40,11 @@ void wall::generate_outline()
 	outline.lineTo(p1);
 }
 
+qreal wall::get_distance_to_point(vector2D p) const
+{
+	return common_functions::dist_to_stratch(edge_a, edge_b, p);
+}
+
 void wall::setup_pen_and_brush()
 {
 	pen.setColor(Qt::darkGray);

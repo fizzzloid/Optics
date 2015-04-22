@@ -79,6 +79,20 @@ ray *circle_mirror::generate_ray(ray *r)
 	return new_ray;
 }
 
+qreal circle_mirror::get_distance_to_point(vector2D p) const
+{
+	qreal d = qFabs(center.distance(p) - qFabs(R));
+	vector2D n = edge_b - edge_a;
+	n /= n.length();
+
+	bool f1 = n.scalar_mult(p - edge_a) >= 0;
+	bool f2 = n.scalar_mult(p - edge_b) <= 0;
+
+	if (!f1) return p.distance(edge_a);
+	else if (!f2) return p.distance(edge_b);
+	else return d;
+}
+
 void circle_mirror::setup_pen_and_brush()
 {
 	pen.setColor(Qt::blue);

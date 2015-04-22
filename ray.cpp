@@ -24,7 +24,7 @@ ray::ray(qreal xpos, qreal ypos, qreal dir, field *f, qreal intens)
 	set_direction(dir);
 
 	background = f;
-	background->add_ray(this);
+	if (background) background->add_ray(this);
 }
 
 ray::ray(qreal xpos, qreal ypos, vector2D dir_vect, field *f, qreal intens)
@@ -44,7 +44,7 @@ ray::ray(qreal xpos, qreal ypos, vector2D dir_vect, field *f, qreal intens)
 	set_direction_vect(dir_vect);
 
 	background = f;
-	background->add_ray(this);
+	if (background) background->add_ray(this);
 }
 
 ray::~ray()
