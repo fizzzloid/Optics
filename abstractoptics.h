@@ -24,6 +24,7 @@ class abstract_optics
 		QPen get_pen() const;
 		QBrush get_brush () const;
 
+		virtual qreal get_distance_to_point(vector2D) const;
 		virtual void setup_pen_and_brush();
 
 	protected:

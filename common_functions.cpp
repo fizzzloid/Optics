@@ -48,7 +48,7 @@ qreal common_functions::dist_to_stratch
 	qreal s = tangent.scalar_mult(p - edge_a);
 
 	// if s too short or too long
-	if (s < 0) return edge_a.distance(p);
+	if (s < 0.0) return edge_a.distance(p);
 	else if (s > l) return edge_b.distance(p);
 	// else return the length of normal component of (p-edge_a)
 	else

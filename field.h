@@ -3,6 +3,7 @@
 
 #include <QList>
 #include <QWidget>
+#include <QSet>
 
 class ray;
 class abstract_optics;
@@ -60,7 +61,7 @@ class field : public QWidget
 		void something_changed();
 
 	private:
-		void paintRay(qint32 num, QPainter *painter);
+		void paintRay(qint32 num, QPainter *painter, bool selected);
 
 		QList<ray *> rays;
 		QList<abstract_optics *> optics;
@@ -78,11 +79,12 @@ class field : public QWidget
 
 		bool mouse_inside;
 		QPoint mouse_click_pos;
-
+		QSet<qint32> selected_rays;
 		bool grid_visible;
 
 		static const qreal scale_base = 1.3;
 		static const qreal turn_koeff = 0.1;
+		static const qint32 mouse_select_distance = 5;
 };
 
 #endif // FIELD_H

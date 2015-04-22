@@ -4,6 +4,7 @@
 #include "field.h"
 #include <QPainterPath>
 #include <QPair>
+#include <QtMath>
 
 abstract_optics::abstract_optics(field *backg)
 {
@@ -19,27 +20,12 @@ QPair<vector2D *, qint32> abstract_optics::intersection_with_ray(ray *) const
 	return QPair<vector2D *, qint32>(0,0);
 }
 
-ray *abstract_optics::generate_ray(ray *)
-{
-	return 0;
-}
-
-
-QPainterPath abstract_optics::get_outline() const
-{
-	return outline;
-}
-
-QBrush abstract_optics::get_brush() const
-{
-	return brush;
-}
-
-QPen abstract_optics::get_pen() const
-{
-	return pen;
-}
-
+ray *abstract_optics::generate_ray(ray *) { return 0; }
+QPainterPath abstract_optics::get_outline() const { return outline; }
+QBrush abstract_optics::get_brush() const {	return brush; }
+QPen abstract_optics::get_pen() const { return pen; }
+qreal abstract_optics::get_distance_to_point
+						(vector2D) const { return INFINITY; }
 void abstract_optics::setup_pen_and_brush()
 {
 	pen.setColor(Qt::blue);

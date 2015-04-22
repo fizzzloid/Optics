@@ -1,6 +1,7 @@
 #include "ray.h"
 #include "lenses.h"
 #include "field.h"
+#include "common_functions.h"
 #include <QList>
 #include <QPair>
 #include <QtMath>
@@ -53,22 +54,11 @@ ray::~ray()
 	if (parent && (parent->child == this)) parent->child = 0;
 }
 
-vector2D ray::get_emitter_pos() const
-{
-	return emitter;
-}
-
-qreal ray::get_direction() const
-{ return direction; }
-
-vector2D ray::get_direction_vect() const
-{ return dir_vector; }
-
-qreal ray::get_intensity() const
-{ return intensity; }
-
-void ray::set_emitter_pos(vector2D emitter_pos)
-{ emitter = emitter_pos; }
+vector2D ray::get_emitter_pos() const { return emitter; }
+qreal ray::get_direction() const { return direction; }
+vector2D ray::get_direction_vect() const { return dir_vector; }
+qreal ray::get_intensity() const { return intensity; }
+void ray::set_emitter_pos(vector2D emitter_pos) { emitter = emitter_pos; }
 
 void ray::set_direction(qreal dir)
 {
@@ -86,16 +76,9 @@ void ray::set_direction_vect(vector2D dir_vect)
 	generate_outline();
 }
 
- void ray::set_intensity(qreal intens)
-{
-	intensity = qMin(intens, 1.0);
-}
-
- ray *ray::get_parent() const
-{ return parent; }
-
- ray *ray::get_child() const
-{ return child; }
+void ray::set_intensity(qreal intens) { intensity = qMin(intens, 1.0); }
+ray *ray::get_parent() const { return parent; }
+ray *ray::get_child() const { return child; }
 
 void ray::set_child(ray *r)
 {
@@ -108,8 +91,7 @@ void ray::set_child(ray *r)
 	child = r;
 }
 
- field *ray::get_field() const
-{ return background; }
+field *ray::get_field() const { return background; }
 
 bool ray::new_intersecting_object()
 {
@@ -148,77 +130,41 @@ bool ray::new_intersecting_object()
 	return true;
 }
 
-abstract_optics *ray::get_intersection_object() const
-{
-	return intersection_object;
-}
+abstract_optics *ray::get_intersection_object() const { return intersection_object; }
+vector2D *ray::get_intersection_point() const { return intersection_point; }
+qint32 ray::get_intersection_part() const { return intersection_part; }
+abstract_optics *ray::get_generator() const { return generator; }
+void ray::set_generator(abstract_optics *o) { generator = o; }
+QColor ray::get_color() const { return color; }
+QPen ray::get_pen() const {	return pen; }
+QPen ray::get_emitter_pen() const {	return emitter_pen; }
+QBrush ray::get_emitter_brush() const {	return emitter_brush; }
+void ray::set_color(QColor c) {	color = c; }
+void ray::set_pen(QPen p) {	pen = p; }
+void ray::set_emitter_brush(QBrush b) {	emitter_brush = b; }
+void ray::set_emitter_pen(QPen p) {	emitter_pen = p; }
+QPainterPath ray::get_path() const { return *path; }
+qreal ray::get_emitter_radius() const {	return emitter_radius; }
 
-vector2D *ray::get_intersection_point() const
+qreal ray::get_distance_to_point(vector2D p) const
 {
-	return intersection_point;
-}
+	qreal min = INFINITY;
+	ray *cur_ray = (ray *) this;
+	while (cur_ray)
+	{
+		qreal dist;
+		if (cur_ray->intersection_point)
+			dist = common_functions::dist_to_stratch
+				(cur_ray->emitter, *cur_ray->intersection_point, p);
+		else dist = common_functions::dist_to_stratch
+				(cur_ray->emitter,
+				 cur_ray->emitter + cur_ray->dir_vector * max_len, p);
 
-qint32 ray::get_intersection_part() const
-{
-	return intersection_part;
-}
+		if (dist < min) min = dist;
+		cur_ray = cur_ray->child;
+	}
 
- abstract_optics *ray::get_generator() const
-{ return generator; }
-
-void ray::set_generator(abstract_optics *o)
-{
-	generator = o;
-}
-
-QColor ray::get_color() const
-{
-	return color;
-}
-
-QPen ray::get_pen() const
-{
-	return pen;
-}
-
-QPen ray::get_emitter_pen() const
-{
-	return emitter_pen;
-}
-
-QBrush ray::get_emitter_brush() const
-{
-	return emitter_brush;
-}
-
-void ray::set_color(QColor c)
-{
-	color = c;
-}
-
-void ray::set_pen(QPen p)
-{
-	pen = p;
-}
-
-void ray::set_emitter_brush(QBrush b)
-{
-	emitter_brush = b;
-}
-
-void ray::set_emitter_pen(QPen p)
-{
-	emitter_pen = p;
-}
-
-QPainterPath ray::get_path() const
-{
-	return *path;
-}
-
-qreal ray::get_emitter_radius() const
-{
-	return emitter_radius;
+	return min;
 }
 
 void ray::setup_colors()
@@ -235,10 +181,7 @@ void ray::setup_colors()
 	set_emitter_radius(3.0);
 }
 
-void ray::set_emitter_radius(qreal r)
-{
-	emitter_radius = r;
-}
+void ray::set_emitter_radius(qreal r) {	emitter_radius = r; }
 
 void ray::generate_outline()
 {
