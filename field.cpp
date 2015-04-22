@@ -180,52 +180,7 @@ void field::paintEvent(QPaintEvent *)
 	painter.scale(scale, -scale);
 
 	// grid
-	if (grid_visible)
-	{
-
-		static const qreal ln_10 = 2.302585092994046;
-		qreal lines_dist =  qPow(10.0, 2 - (qint32) (qLn(scale)/ln_10));
-		qint32 h_lines_count = 2 + height() / (scale * lines_dist);
-		qreal first_line_y = ( (int) (corner.y() / lines_dist) - 1)
-				* lines_dist;
-		qint32 v_lines_count = 2 + width() / (scale * lines_dist);
-		qreal first_line_x = ( (int) (corner.x() / lines_dist) - 1)
-				* lines_dist;
-
-		QColor grid_color;
-		grid_color.setRgb(32,32,32);
-		painter.setPen(QPen(grid_color, 0, Qt::SolidLine));
-		for (qint32 i = 0; i < h_lines_count * 5; i++)
-		{
-			qreal y = first_line_y + i * lines_dist * 0.2;
-			painter.drawLine(QPointF(corner.x(), y),
-							 QPointF(corner.x() + width() / scale, y));
-		}
-
-		painter.setPen(QPen(grid_color, 0, Qt::SolidLine));
-		for (qint32 i = 0; i < v_lines_count * 5; i++)
-		{
-			qreal x = first_line_x + i * lines_dist * 0.2;
-			painter.drawLine(QPointF(x, corner.y()),
-							 QPointF(x, corner.y() + height() / scale));
-		}
-
-		grid_color.setRgb(150, 150, 150);
-		painter.setPen(QPen(grid_color, 2/scale, Qt::SolidLine));
-		for (qint32 i = 0; i < h_lines_count; i++)
-		{
-			qreal y = first_line_y + i * lines_dist;
-			painter.drawLine(QPointF(corner.x(), y),
-							 QPointF(corner.x() + width() / scale, y));
-		}
-
-		for (qint32 i = 0; i < v_lines_count; i++)
-		{
-			qreal x = first_line_x + i * lines_dist;
-			painter.drawLine(QPointF(x, corner.y()),
-							 QPointF(x, corner.y() + height() / scale));
-		}
-	}
+	if (grid_visible) paintGrid(&painter);
 
 	// rays
 	qint32 l = rays.length();
@@ -237,13 +192,8 @@ void field::paintEvent(QPaintEvent *)
 	l = optics.length();
 	for (qint32 i = 0; i < l; i++)
 	{
-		abstract_optics *cur_opt = optics[i];
-		QPen o_pen = cur_opt->get_pen();
-		o_pen.setWidthF(o_pen.widthF()/scale);
-		painter.setPen(o_pen);
-		painter.setBrush(cur_opt->get_brush());
-		painter.drawPath(cur_opt->get_outline());
-	}
+		paintOptic(i, &painter, selected_optics.contains(i));
+			}
 
 }
 
@@ -311,26 +261,7 @@ void field::mouseMoveEvent(QMouseEvent *me)
 		break;
 
 	default:
-		vector2D mouse_pos;
-		mouse_pos.setX(corner.x() + mouse_click_pos.x() / scale);
-		mouse_pos.setY(corner.y() +
-					   (height() - mouse_click_pos.y()) / scale);
-		bool selection_changed = false;
-		qint32 l = rays.length();
-		for (qint32 i = 0; i < l; i++)
-		{
-			bool flag1 =
-					rays[i]->get_distance_to_point(mouse_pos) * scale
-					<= mouse_select_distance;
-			bool flag2 = selected_rays.contains(i);
-			if (flag1 != flag2)
-			{
-				selection_changed = true;
-				if (flag1) selected_rays.insert(i);
-				else selected_rays.remove(i);
-			}
-		}
-		if (selection_changed) update();
+		if (selection_changed()) update();
 		break;
 	}
 
@@ -346,12 +277,10 @@ void field::mousePressEvent(QMouseEvent *me)
 		 setCursor(Qt::ClosedHandCursor);
 }
 
-void field::mouseReleaseEvent(QMouseEvent *)
-{
-	unsetCursor();
-}
+void field::mouseReleaseEvent(QMouseEvent *) { unsetCursor(); }
 
-void field::paintRay(qint32 num, QPainter *painter, bool selected)
+void field::paintRay(qint32 num, QPainter *painter,
+					 bool selected) const
 {
 	ray *cur_ray = rays[num];
 	while (cur_ray)
@@ -376,4 +305,111 @@ void field::paintRay(qint32 num, QPainter *painter, bool selected)
 		cur_ray = cur_ray->get_child();
 	}
 
+}
+
+void field::paintOptic(qint32 num, QPainter *painter,
+					   bool selected) const
+{
+	abstract_optics *cur_opt = optics[num];
+	QPen o_pen = cur_opt->get_pen();
+	QBrush o_brush = cur_opt->get_brush();
+	if (selected)
+	{
+		o_pen.setWidthF(2 * (1 + o_pen.widthF()) / scale);
+		QColor color = o_brush.color();
+		color.setAlphaF(0.5 + 0.5 * color.alphaF());
+		o_brush.setColor(color);
+	}
+	else o_pen.setWidthF(o_pen.widthF() / scale);
+
+	painter->setPen(o_pen);
+	painter->setBrush(o_brush);
+	painter->drawPath(cur_opt->get_outline());
+}
+
+void field::paintGrid(QPainter *painter) const
+{
+		static const qreal ln_10 = 2.302585092994046;
+		qreal lines_dist =  qPow(10.0, 2 - (qint32) (qLn(scale)/ln_10));
+		qint32 h_lines_count = 2 + height() / (scale * lines_dist);
+		qreal first_line_y = ( (int) (corner.y() / lines_dist) - 1)
+				* lines_dist;
+		qint32 v_lines_count = 2 + width() / (scale * lines_dist);
+		qreal first_line_x = ( (int) (corner.x() / lines_dist) - 1)
+				* lines_dist;
+
+		QColor grid_color;
+		grid_color.setRgb(32,32,32);
+		painter->setPen(QPen(grid_color, 0, Qt::SolidLine));
+		for (qint32 i = 0; i < h_lines_count * 5; i++)
+		{
+			qreal y = first_line_y + i * lines_dist * 0.2;
+			painter->drawLine(QPointF(corner.x(), y),
+							 QPointF(corner.x() + width() / scale, y));
+		}
+
+		painter->setPen(QPen(grid_color, 0, Qt::SolidLine));
+		for (qint32 i = 0; i < v_lines_count * 5; i++)
+		{
+			qreal x = first_line_x + i * lines_dist * 0.2;
+			painter->drawLine(QPointF(x, corner.y()),
+							 QPointF(x, corner.y() + height() / scale));
+		}
+
+		grid_color.setRgb(150, 150, 150);
+		painter->setPen(QPen(grid_color, 2/scale, Qt::SolidLine));
+		for (qint32 i = 0; i < h_lines_count; i++)
+		{
+			qreal y = first_line_y + i * lines_dist;
+			painter->drawLine(QPointF(corner.x(), y),
+							 QPointF(corner.x() + width() / scale, y));
+		}
+
+		for (qint32 i = 0; i < v_lines_count; i++)
+		{
+			qreal x = first_line_x + i * lines_dist;
+			painter->drawLine(QPointF(x, corner.y()),
+							 QPointF(x, corner.y() + height() / scale));
+		}
+}
+
+bool field::selection_changed()
+{
+	vector2D mouse_pos;
+	mouse_pos.setX(corner.x() + mouse_click_pos.x() / scale);
+	mouse_pos.setY(corner.y() +
+				   (height() - mouse_click_pos.y()) / scale);
+	bool result = false;
+	// rays
+	qint32 l = rays.length();
+	for (qint32 i = 0; i < l; i++)
+	{
+		bool flag1 =
+				rays[i]->get_distance_to_point(mouse_pos) * scale
+				<= mouse_select_distance;
+		bool flag2 = selected_rays.contains(i);
+		if (flag1 != flag2)
+		{
+			result = true;
+			if (flag1) selected_rays.insert(i);
+			else selected_rays.remove(i);
+		}
+	}
+
+	// optics
+	l = optics.length();
+	for (qint32 i = 0; i < l; i++)
+	{
+		bool flag1 =
+				optics[i]->get_distance_to_point(mouse_pos) * scale
+				<= mouse_select_distance;
+		bool flag2 = selected_optics.contains(i);
+		if (flag1 != flag2)
+		{
+			result = true;
+			if (flag1) selected_optics.insert(i);
+			else selected_optics.remove(i);
+		}
+	}
+	return result;
 }

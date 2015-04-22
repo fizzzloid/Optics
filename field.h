@@ -61,8 +61,11 @@ class field : public QWidget
 		void something_changed();
 
 	private:
-		void paintRay(qint32 num, QPainter *painter, bool selected);
+		void paintRay(qint32 num, QPainter *painter, bool selected) const;
+		void paintOptic(qint32 num, QPainter *painter, bool selected) const;
+		void paintGrid(QPainter *painter) const;
 
+		bool selection_changed();
 		QList<ray *> rays;
 		QList<abstract_optics *> optics;
 
@@ -80,6 +83,7 @@ class field : public QWidget
 		bool mouse_inside;
 		QPoint mouse_click_pos;
 		QSet<qint32> selected_rays;
+		QSet<qint32> selected_optics;
 		bool grid_visible;
 
 		static const qreal scale_base = 1.3;

@@ -92,6 +92,10 @@ ray *thin_lense::generate_ray(ray *r)
 	return new_ray;
 }
 
+qreal thin_lense::get_distance_to_point(vector2D p) const
+{ return common_functions::dist_to_stratch(edge_a, edge_b, p); }
+
+
 void thin_lense::setup_pen_and_brush()
 {
 	pen.setColor(Qt::blue);

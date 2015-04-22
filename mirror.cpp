@@ -52,6 +52,9 @@ ray *mirror::generate_ray(ray *r)
 	return new_ray;
 }
 
+qreal mirror::get_distance_to_point(vector2D p) const
+{ return common_functions::dist_to_stratch(edge_a, edge_b, p); }
+
 void mirror::generate_outline()
 {
 	outline.moveTo(edge_a);

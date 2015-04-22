@@ -23,7 +23,8 @@ circle_mirror::circle_mirror(vector2D a, vector2D b,
 	vector2D n(-main_tangent.y(), main_tangent.x());
 
 	center = 0.5 * (edge_a + edge_b);
-	if (black_inside = (R > 0))
+	black_inside = R > 0;
+	if (black_inside)
 		center += n * qSqrt(R*R - dist * dist / 4);
 	else
 		center -= n * qSqrt(R*R - dist * dist / 4);

@@ -4,7 +4,7 @@
 #include "common_functions.h"
 #include <QtMath>
 #include <QPair>
-
+#include <QDebug>
 prism::prism(QPolygonF p, qreal index_of_refraction, field *backg)
 	: abstract_optics(backg)
 {
@@ -85,8 +85,8 @@ void prism::calculate_geometry()
 	for (qint32 i = 0; i < l; i++)
 	{
 		vector2D tangent(polygon[(i+1)%l] - polygon[i]);
-		vector2D n(-tangent.y(), tangent.x());
-		normal.append(n*sign);
+		vector2D n(-sign * tangent.y(), sign*tangent.x());
+		normal.append(n / n.length());
 	}
 }
 

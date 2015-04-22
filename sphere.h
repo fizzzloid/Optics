@@ -17,6 +17,8 @@ class sphere : public abstract_optics
 		QPair<vector2D *, qint32>intersection_with_ray(ray *r) const;
 		ray *generate_ray(ray *r);
 
+		qreal get_distance_to_point(vector2D p) const;
+
 	private:
 		void generate_outline();
 		vector2D center;

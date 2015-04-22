@@ -39,6 +39,9 @@ ray *sphere::generate_ray(ray *r)
 			(cross, n, index_of_refr, r, background);
 }
 
+qreal sphere::get_distance_to_point(vector2D p) const
+{ return qMax(0.0, vector2D(p - center).length() - radius); }
+
 void sphere::generate_outline()
 {
 	outline.addEllipse(center, radius, radius);
