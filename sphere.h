@@ -6,6 +6,7 @@
 #include <QPair>
 class ray;
 class field;
+class QString;
 
 class sphere : public abstract_optics
 {
@@ -18,6 +19,8 @@ class sphere : public abstract_optics
 		ray *generate_ray(ray *r);
 
 		qreal get_distance_to_point(vector2D p) const;
+
+		QString who_i_am() const;
 
 	private:
 		void generate_outline();

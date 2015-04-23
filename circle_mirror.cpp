@@ -3,6 +3,7 @@
 #include "field.h"
 #include "common_functions.h"
 #include <QtMath>
+#include <QString>
 #include <QDebug>
 circle_mirror::circle_mirror(vector2D a, vector2D b,
 							 qreal radius, field *backg)
@@ -98,12 +99,15 @@ void circle_mirror::setup_pen_and_brush()
 	pen.setColor(Qt::blue);
 	pen.setWidth(2);
 	pen.setStyle(Qt::SolidLine);
+	pen.setCapStyle(Qt::RoundCap);
 
 	QColor brush_color(Qt::darkBlue);
-	brush_color.setAlpha(0);
 	brush.setColor(brush_color);
-	brush.setStyle(Qt::SolidPattern);
+	brush.setStyle(Qt::NoBrush);
 }
+
+QString circle_mirror::who_i_am() const
+	{ return QString("Circle mirror"); }
 
 void circle_mirror::generate_outline()
 {

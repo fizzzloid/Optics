@@ -9,7 +9,7 @@
 class vector2D;
 class ray;
 class field;
-
+class QString;
 
 class abstract_optics
 {
@@ -26,6 +26,8 @@ class abstract_optics
 
 		virtual qreal get_distance_to_point(vector2D) const;
 		virtual void setup_pen_and_brush();
+
+		virtual QString who_i_am() const;
 
 	protected:
 		field *background;

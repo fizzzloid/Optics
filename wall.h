@@ -5,6 +5,7 @@
 #include "vector2D.h"
 #include <QPair>
 #include <QPainterPath>
+class QString;
 
 class wall : public abstract_optics
 {
@@ -17,6 +18,8 @@ class wall : public abstract_optics
 		qreal get_distance_to_point(vector2D p) const;
 
 		void setup_pen_and_brush();
+
+		QString who_i_am() const;
 
 		static const qreal thickness = 0.005;
 	private:

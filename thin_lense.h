@@ -4,6 +4,7 @@
 #include <abstractoptics.h>
 #include <vector2D.h>
 #include <QPair>
+class QString;
 class thin_lense : public abstract_optics
 {
 	public:
@@ -18,6 +19,8 @@ class thin_lense : public abstract_optics
 		qreal get_distance_to_point(vector2D p) const;
 
 		void setup_pen_and_brush();
+
+		QString who_i_am() const;
 
 	private:
 		vector2D edge_a, edge_b, center, normal, tangent;

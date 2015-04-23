@@ -42,6 +42,8 @@ ray *sphere::generate_ray(ray *r)
 qreal sphere::get_distance_to_point(vector2D p) const
 { return qMax(0.0, vector2D(p - center).length() - radius); }
 
+QString sphere::who_i_am() const { return QString("Sphere"); }
+
 void sphere::generate_outline()
 {
 	outline.addEllipse(center, radius, radius);

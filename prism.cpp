@@ -67,6 +67,8 @@ qreal prism::get_distance_to_point(vector2D p) const
 	return min;
 }
 
+QString prism::who_i_am() const { return QString("Prism"); }
+
 void prism::calculate_geometry()
 {
 	qint32 l = polygon.length();

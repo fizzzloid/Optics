@@ -4,6 +4,7 @@
 #include <abstractoptics.h>
 #include "vector2D.h"
 #include <QPair>
+class QString;
 
 class mirror : public abstract_optics
 {
@@ -15,6 +16,8 @@ class mirror : public abstract_optics
 		ray *generate_ray(ray *r);
 
 		qreal get_distance_to_point(vector2D p) const;
+
+		QString who_i_am() const;
 
 		static const quint32 hatch_count = 15;
 

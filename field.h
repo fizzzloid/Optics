@@ -13,6 +13,8 @@ class QPaintEvent;
 class QKeyEvent;
 class QEvent;
 class QWheelEvent;
+class QMenu;
+class QContextMenuEvent;
 
 class field : public QWidget
 {
@@ -43,6 +45,10 @@ class field : public QWidget
 		void set_index_of_refraction(qreal i);
 		qreal get_index_of_refraction() const;
 
+		QSet<qint32> get_highlited_rays() const;
+		QSet<qint32> get_highlited_optics() const;
+		QString who_is_optic(qint32 num) const;
+
 		quint32 rays_count() const;
 
 		void show_grid(bool show);
@@ -56,6 +62,11 @@ class field : public QWidget
 		void mouseMoveEvent(QMouseEvent *me);
 		void mousePressEvent(QMouseEvent *me);
 		void mouseReleaseEvent(QMouseEvent *);
+		void contextMenuEvent(QContextMenuEvent *me);
+		void highlight_ray(qint32 num);
+		void highlight_optic(qint32 num);
+		void select_ray();
+		void select_optic();
 
 	signals:
 		void something_changed();
@@ -65,7 +76,7 @@ class field : public QWidget
 		void paintOptic(qint32 num, QPainter *painter, bool selected) const;
 		void paintGrid(QPainter *painter) const;
 
-		bool selection_changed();
+		bool highlight_changed();
 		QList<ray *> rays;
 		QList<abstract_optics *> optics;
 
@@ -82,8 +93,9 @@ class field : public QWidget
 
 		bool mouse_inside;
 		QPoint mouse_click_pos;
-		QSet<qint32> selected_rays;
-		QSet<qint32> selected_optics;
+		QSet<qint32> highlighted_rays;
+		QSet<qint32> highlighted_optics;
+		QMenu *context_menu;
 		bool grid_visible;
 
 		static const qreal scale_base = 1.3;

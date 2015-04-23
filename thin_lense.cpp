@@ -4,6 +4,7 @@
 #include <QtMath>
 #include <QPainter>
 #include <common_functions.h>
+#include <QString>
 
 thin_lense::thin_lense(vector2D start, vector2D end,
 					   qreal dioptr, field *backg) : abstract_optics(backg)
@@ -101,12 +102,14 @@ void thin_lense::setup_pen_and_brush()
 	pen.setColor(Qt::blue);
 	pen.setWidth(2);
 	pen.setStyle(Qt::SolidLine);
+	pen.setCapStyle(Qt::RoundCap);
 
 	QColor brush_color(Qt::darkBlue);
-	brush_color.setAlphaF(0.0);
 	brush.setColor(brush_color);
-	brush.setStyle(Qt::SolidPattern);
+	brush.setStyle(Qt::NoBrush);
 }
+
+QString thin_lense::who_i_am() const { return QString("Thin lense"); }
 
 void thin_lense::generate_outline()
 {

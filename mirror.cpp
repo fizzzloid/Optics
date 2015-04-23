@@ -5,6 +5,7 @@
 #include <QtMath>
 #include <QDebug>
 #include <QPair>
+#include <QString>
 
 mirror::mirror(vector2D start, vector2D end,
 			   bool orient, field *backg)
@@ -54,6 +55,8 @@ ray *mirror::generate_ray(ray *r)
 
 qreal mirror::get_distance_to_point(vector2D p) const
 { return common_functions::dist_to_stratch(edge_a, edge_b, p); }
+
+QString mirror::who_i_am() const { return QString("Mirror"); }
 
 void mirror::generate_outline()
 {

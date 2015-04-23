@@ -6,6 +6,7 @@
 #include <QPair>
 class ray;
 class field;
+class QString;
 
 class circle_mirror : public abstract_optics
 {
@@ -20,6 +21,7 @@ class circle_mirror : public abstract_optics
 		qreal get_distance_to_point(vector2D p) const;
 		void setup_pen_and_brush();
 
+		QString who_i_am() const;
 		static const qint32 hatch_count = 15;
 
 	private:

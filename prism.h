@@ -8,6 +8,8 @@
 #include <QPair>
 class field;
 class ray;
+class QString;
+
 class prism : public abstract_optics
 {
 	public:
@@ -18,6 +20,8 @@ class prism : public abstract_optics
 		ray *generate_ray(ray *r);
 
 		qreal get_distance_to_point(vector2D p) const;
+
+		QString who_i_am() const;
 
 	private:
 		void calculate_geometry();		

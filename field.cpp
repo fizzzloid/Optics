@@ -1,10 +1,13 @@
 #include "field.h"
 #include "ray.h"
 #include "lenses.h"
+#include "obj_selection_menu.h"
 #include <QPainter>
 #include <QKeyEvent>
 #include <QtMath>
 #include <QDebug>
+#include <QAction>
+#include <QMenu>
 
 field::field(QWidget *parent) : QWidget(parent)
 {
@@ -24,6 +27,8 @@ field::field(QWidget *parent) : QWidget(parent)
 	setMouseTracking(true);
 	mouse_inside = false;
 	grid_visible = true;
+
+	context_menu = 0;
 
 	emit something_changed();
 }
@@ -49,6 +54,7 @@ void field::delete_optic(abstract_optics *o) { optics.removeOne(o); }
 
 void field::clear()
 {
+	if (context_menu) delete context_menu;
 	for (quint32 i = rays.length(); i > 0; i--)
 	{
 		delete rays.first();
@@ -60,7 +66,6 @@ void field::clear()
 		delete optics.first();
 		optics.removeFirst();
 	}
-
 }
 
 void field::recalc()
@@ -142,6 +147,9 @@ void field::set_index_of_refraction(qreal i)
 }
 
 qreal field::get_index_of_refraction() const { return index_of_refr; }
+QSet<qint32> field::get_highlited_rays() const { return highlighted_rays; }
+QSet<qint32> field::get_highlited_optics() const { return highlighted_optics; }
+QString field::who_is_optic(qint32 num) const { return optics[num]->who_i_am(); }
 
 quint32 field::rays_count() const
 {
@@ -187,13 +195,13 @@ void field::paintEvent(QPaintEvent *)
 	// rays
 	qint32 l = rays.length();
 	for (qint32 i = 0; i < l; i++)
-		paintRay(i, &painter, selected_rays.contains(i));
+		paintRay(i, &painter, highlighted_rays.contains(i));
 
 
 	// optics
 	l = optics.length();
 	for (qint32 i = 0; i < l; i++)
-		paintOptic(i, &painter, selected_optics.contains(i));
+		paintOptic(i, &painter, highlighted_optics.contains(i));
 
 }
 
@@ -261,7 +269,7 @@ void field::mouseMoveEvent(QMouseEvent *me)
 		break;
 
 	default:
-		if (selection_changed()) update();
+		if (highlight_changed()) update();
 		break;
 	}
 
@@ -273,11 +281,58 @@ void field::mousePressEvent(QMouseEvent *me)
 {
 	mouse_click_pos.setX(me->x());
 	mouse_click_pos.setY(me->y());
-	 if (me->buttons() & Qt::LeftButton)
-		 setCursor(Qt::ClosedHandCursor);
+	switch(me->buttons())
+	{
+	case Qt::LeftButton:
+		setCursor(Qt::ClosedHandCursor);
+		break;
+	}
 }
 
 void field::mouseReleaseEvent(QMouseEvent *) { unsetCursor(); }
+
+void field::contextMenuEvent(QContextMenuEvent *me)
+{
+	if (context_menu) delete context_menu;
+	if (highlighted_rays.count() + highlighted_optics.count() > 0)
+	{
+		context_menu = new obj_selection_menu(highlighted_rays,
+											  highlighted_optics,
+											  this);
+		context_menu->move(me->globalPos());
+		context_menu->show();
+	}
+}
+
+void field::highlight_ray(qint32 num)
+{
+	if ((num >= 0) && (num < rays.length()))
+	{
+		highlighted_rays.clear();
+		highlighted_rays.insert(num);
+	}
+}
+
+void field::highlight_optic(qint32 num)
+{
+	if ((num >= 0) && (num < optics.length()))
+	{
+		highlighted_optics.clear();
+		highlighted_optics.insert(num);
+	}
+}
+
+void field::select_ray()
+{
+	QAction *a = (QAction *) sender();
+	qint32 n = a->data().toInt();
+}
+
+void field::select_optic()
+{
+	QAction *a = (QAction *) sender();
+	qint32 n = a->data().toInt();
+}
 
 void field::paintRay(qint32 num, QPainter *painter,
 					 bool selected) const
@@ -373,7 +428,8 @@ void field::paintGrid(QPainter *painter) const
 		}
 }
 
-bool field::selection_changed()
+
+bool field::highlight_changed()
 {
 	vector2D mouse_pos;
 	mouse_pos.setX(corner.x() + mouse_click_pos.x() / scale);
@@ -387,12 +443,12 @@ bool field::selection_changed()
 		bool flag1 =
 				rays[i]->get_distance_to_point(mouse_pos) * scale
 				<= mouse_select_distance;
-		bool flag2 = selected_rays.contains(i);
+		bool flag2 = highlighted_rays.contains(i);
 		if (flag1 != flag2)
 		{
 			result = true;
-			if (flag1) selected_rays.insert(i);
-			else selected_rays.remove(i);
+			if (flag1) highlighted_rays.insert(i);
+			else highlighted_rays.remove(i);
 		}
 	}
 
@@ -403,12 +459,12 @@ bool field::selection_changed()
 		bool flag1 =
 				optics[i]->get_distance_to_point(mouse_pos) * scale
 				<= mouse_select_distance;
-		bool flag2 = selected_optics.contains(i);
+		bool flag2 = highlighted_optics.contains(i);
 		if (flag1 != flag2)
 		{
 			result = true;
-			if (flag1) selected_optics.insert(i);
-			else selected_optics.remove(i);
+			if (flag1) highlighted_optics.insert(i);
+			else highlighted_optics.remove(i);
 		}
 	}
 	return result;

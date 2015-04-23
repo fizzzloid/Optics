@@ -5,6 +5,7 @@
 #include <QPainterPath>
 #include <QPair>
 #include <QtMath>
+#include <QString>
 
 abstract_optics::abstract_optics(field *backg)
 {
@@ -26,16 +27,23 @@ QBrush abstract_optics::get_brush() const {	return brush; }
 QPen abstract_optics::get_pen() const { return pen; }
 qreal abstract_optics::get_distance_to_point
 						(vector2D) const { return INFINITY; }
+
 void abstract_optics::setup_pen_and_brush()
 {
 	pen.setColor(Qt::blue);
 	pen.setWidth(2);
 	pen.setStyle(Qt::SolidLine);
+	pen.setCapStyle(Qt::RoundCap);
 
 	QColor brush_color(Qt::darkBlue);
 	brush_color.setAlphaF(0.3);
 	brush.setColor(brush_color);
 	brush.setStyle(Qt::SolidPattern);
+}
+
+QString abstract_optics::who_i_am() const
+{
+	return QString("abstract optics");
 }
 
 void abstract_optics::generate_outline() {}

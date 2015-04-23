@@ -6,6 +6,7 @@
 #include <QList>
 #include <QtMath>
 #include <QPair>
+#include <QString>
 #include <QDebug>
 real_lense::real_lense(vector2D a, vector2D b,
 						qreal thicknes,
@@ -152,6 +153,8 @@ qreal real_lense::get_distance_to_point(vector2D p) const
 
 	return INFINITY;
 }
+
+QString real_lense::who_i_am() const { return QString("Real lense"); }
 
 void real_lense::generate_outline()
 {
