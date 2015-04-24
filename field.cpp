@@ -2,6 +2,7 @@
 #include "ray.h"
 #include "lenses.h"
 #include "obj_selection_menu.h"
+#include "ray_options.h"
 #include <QPainter>
 #include <QKeyEvent>
 #include <QtMath>
@@ -51,6 +52,8 @@ void field::add_optic(abstract_optics *o)
 
 void field::delete_ray(ray *r) { rays.removeOne(r); }
 void field::delete_optic(abstract_optics *o) { optics.removeOne(o); }
+ray *field::get_ray_num(qint32 num) const { return rays[num]; }
+abstract_optics *field::get_optic_num(qint32 num) const { return optics[num]; }
 
 void field::clear()
 {
@@ -83,12 +86,16 @@ void field::recalc_ray_num(qint32 n)
 	while (cur_ray)
 	{
 
-		if (cur_ray->new_intersecting_object()
-			&& cur_ray->get_intersection_object())
+		if (cur_ray->new_intersecting_object())
 		{
 			abstract_optics *int_opt =
-					cur_ray->get_intersection_object();
-			int_opt->generate_ray(cur_ray);
+				cur_ray->get_intersection_object();
+			if (int_opt)
+			{
+				ray *new_ray = int_opt->generate_ray(cur_ray);
+				cur_ray->set_child(new_ray);
+			}
+			else cur_ray->set_child(0);
 		}
 		cur_ray = cur_ray->get_child();
 	}
@@ -299,6 +306,15 @@ void field::contextMenuEvent(QContextMenuEvent *me)
 		context_menu = new obj_selection_menu(highlighted_rays,
 											  highlighted_optics,
 											  this);
+		connect(context_menu, SIGNAL(mouse_on_ray(qint32)),
+				this, SLOT(highlight_ray(qint32)));
+		connect(context_menu, SIGNAL(mouse_on_optic(qint32)),
+				this, SLOT(highlight_optic(qint32)));
+		connect(context_menu, SIGNAL(ray_selected(qint32)),
+				this, SLOT(select_ray(qint32)));
+		connect(context_menu, SIGNAL(optic_selected(qint32)),
+				this, SLOT(select_optic(qint32)));
+
 		context_menu->move(me->globalPos());
 		context_menu->show();
 	}
@@ -306,10 +322,12 @@ void field::contextMenuEvent(QContextMenuEvent *me)
 
 void field::highlight_ray(qint32 num)
 {
-	if ((num >= 0) && (num < rays.length()))
+	if (num < rays.length())
 	{
 		highlighted_rays.clear();
+		highlighted_optics.clear();
 		highlighted_rays.insert(num);
+		update();
 	}
 }
 
@@ -318,20 +336,20 @@ void field::highlight_optic(qint32 num)
 	if ((num >= 0) && (num < optics.length()))
 	{
 		highlighted_optics.clear();
+		highlighted_rays.clear();
 		highlighted_optics.insert(num);
+		update();
 	}
 }
 
-void field::select_ray()
+void field::select_ray(qint32 num)
 {
-	QAction *a = (QAction *) sender();
-	qint32 n = a->data().toInt();
+	ray_options ro(num, this, this);
+	ro.exec();
 }
 
-void field::select_optic()
+void field::select_optic(qint32 num)
 {
-	QAction *a = (QAction *) sender();
-	qint32 n = a->data().toInt();
 }
 
 void field::paintRay(qint32 num, QPainter *painter,
@@ -427,7 +445,6 @@ void field::paintGrid(QPainter *painter) const
 							 QPointF(x, corner.y() + height() / scale));
 		}
 }
-
 
 bool field::highlight_changed()
 {

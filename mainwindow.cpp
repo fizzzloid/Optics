@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "optics.h"
 #include "common_functions.h"
+#include "ray_options.h"
 #include <QtWidgets>
 #include <QKeyEvent>
 #include <QtMath>
@@ -12,6 +13,9 @@ MainWindow::MainWindow(QWidget *parent)
 	setCentralWidget(active_field);
 
 	setMinimumSize(400,400);
+	setup_statusbar();
+	connect(active_field, SIGNAL(something_changed()),
+			this, SLOT(status_changed()));
 
 	for (int i = -5; i < 6; i++)
 	new ray(-0.4, 0.3 + 0.01*i,  0.0, active_field);
@@ -34,10 +38,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 	active_field->recalc();
 	active_field->corner_turn(-0.1, -0.1);
-
-	setup_statusbar();
-	connect(active_field, SIGNAL(something_changed()),
-			this, SLOT(status_changed()));
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *ke)

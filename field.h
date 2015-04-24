@@ -29,6 +29,8 @@ class field : public QWidget
 		void add_optic(abstract_optics *o);
 		void delete_ray(ray *r);
 		void delete_optic(abstract_optics *o);
+		ray *get_ray_num(qint32 num) const;
+		abstract_optics *get_optic_num(qint32 num) const;
 
 		void clear();
 
@@ -65,8 +67,8 @@ class field : public QWidget
 		void contextMenuEvent(QContextMenuEvent *me);
 		void highlight_ray(qint32 num);
 		void highlight_optic(qint32 num);
-		void select_ray();
-		void select_optic();
+		void select_ray(qint32 num);
+		void select_optic(qint32 num);
 
 	signals:
 		void something_changed();
