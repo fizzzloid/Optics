@@ -41,6 +41,15 @@ void abstract_optics::setup_pen_and_brush()
 	brush.setStyle(Qt::SolidPattern);
 }
 
+void abstract_optics::move_to(qreal, qreal) {}
+void abstract_optics::move_by(qreal, qreal) {}
+void abstract_optics::rot_by(qreal) {}
+void abstract_optics::set_angle(qreal) {}
+void abstract_optics::set_nodal_points(QList<vector2D>) {}
+
+qreal abstract_optics::get_angle() const { return 0.0; }
+QList<vector2D> abstract_optics::get_nodal_points() const { return QList<vector2D>(); }
+
 QString abstract_optics::who_i_am() const
 {
 	return QString("abstract optics");

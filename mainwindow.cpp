@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
 	active_field = new field(this);
 	setCentralWidget(active_field);
 
-	setMinimumSize(400,400);
+	setMinimumSize(700,700);
 	setup_statusbar();
 	connect(active_field, SIGNAL(something_changed()),
 			this, SLOT(status_changed()));

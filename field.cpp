@@ -10,14 +10,15 @@
 #include <QAction>
 #include <QMenu>
 
-field::field(QWidget *parent) : QWidget(parent)
+field::field(QWidget *parent)
+	: QWidget(parent),
+	  corner(0,0),
+	  scale_step(0),
+	  scale(1000.0),
+	  index_of_refr(1.0),
+	  context_menu(0),
+	  ray_menu(0)
 {
-	corner = QPointF(0,0);
-	scale_step = 0;
-	scale = 1000.0;
-
-	index_of_refr = 1.0;
-
 	background_color = Qt::black;
 	rays_color = Qt::red;
 	background_brush = new QBrush(background_color, Qt::SolidPattern);
@@ -28,8 +29,6 @@ field::field(QWidget *parent) : QWidget(parent)
 	setMouseTracking(true);
 	mouse_inside = false;
 	grid_visible = true;
-
-	context_menu = 0;
 
 	emit something_changed();
 }
@@ -80,19 +79,18 @@ void field::recalc()
 
 void field::recalc_ray_num(qint32 n)
 {
-	if (n >= rays.length()) return;
+	if ((n < 0) || (n >= rays.length())) return;
 
 	ray *cur_ray = rays[n];
 	while (cur_ray)
 	{
-
 		if (cur_ray->new_intersecting_object())
 		{
 			abstract_optics *int_opt =
 				cur_ray->get_intersection_object();
 			if (int_opt)
 			{
-				ray *new_ray = int_opt->generate_ray(cur_ray);
+				ray * new_ray = int_opt->generate_ray(cur_ray);
 				cur_ray->set_child(new_ray);
 			}
 			else cur_ray->set_child(0);
@@ -344,8 +342,9 @@ void field::highlight_optic(qint32 num)
 
 void field::select_ray(qint32 num)
 {
-	ray_options ro(num, this, this);
-	ro.exec();
+	if (ray_menu) delete ray_menu;
+	ray_menu = new ray_options(num, this, this);
+	ray_menu->show();
 }
 
 void field::select_optic(qint32 num)

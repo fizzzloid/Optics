@@ -27,6 +27,15 @@ class abstract_optics
 		virtual qreal get_distance_to_point(vector2D) const;
 		virtual void setup_pen_and_brush();
 
+		virtual void move_to(qreal, qreal);
+		virtual void move_by(qreal, qreal);
+		virtual void rot_by(qreal);
+		virtual void set_angle(qreal);
+		virtual void set_nodal_points(QList<vector2D>);
+
+		virtual qreal get_angle() const;
+		virtual QList<vector2D> get_nodal_points() const;
+
 		virtual QString who_i_am() const;
 
 	protected:

@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     real_lense.cpp \
     circle_mirror.cpp \
     ray_options.cpp \
-    obj_selection_menu.cpp
+    obj_selection_menu.cpp \
+    optic_options.cpp
 
 HEADERS  += mainwindow.h \
     ray.h \
@@ -45,7 +46,9 @@ HEADERS  += mainwindow.h \
     real_lense.h \
     circle_mirror.h \
     ray_options.h \
-    obj_selection_menu.h
+    obj_selection_menu.h \
+    optic_options.h
 
 FORMS += \
-    ray_options.ui
+    ray_options.ui \
+    optic_options.ui

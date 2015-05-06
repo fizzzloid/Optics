@@ -8,42 +8,35 @@
 #include <QDebug>
 
 ray::ray(qreal xpos, qreal ypos, qreal dir, field *f, qreal intens)
+	: emitter(xpos, ypos),
+	  parent(0),
+	  child(0),
+	  intersection_object(0),
+	  intersection_point(0),
+	  generator(0),
+	  path(0),
+	  background(f)
+
 {	
-	emitter.setX(xpos);
-	emitter.setY(ypos);
-
-	parent = 0;
-	child = 0;
-	intersection_object = 0;
-	intersection_point = 0;
-	generator = 0;
-
-	path = 0;
 	set_intensity(intens);
 	setup_colors();
 	set_direction(dir);
-
-	background = f;
 	if (background) background->add_ray(this);
 }
 
 ray::ray(qreal xpos, qreal ypos, vector2D dir_vect, field *f, qreal intens)
+	: emitter(xpos, ypos),
+	  path(0),
+	  parent(0),
+	  child(0),
+	  intersection_object(0),
+	  intersection_point(0),
+	  generator(0),
+	  background(f)
 {
-	emitter.setX(xpos);
-	emitter.setY(ypos);
-
-	path = 0;
-	parent = 0;
-	child = 0;
-	intersection_object = 0;
-	intersection_point = 0;
-	generator = 0;
-
 	set_intensity(intens);
 	setup_colors();
 	set_direction_vect(dir_vect);
-
-	background = f;
 	if (background) background->add_ray(this);
 }
 
@@ -82,6 +75,7 @@ ray *ray::get_child() const { return child; }
 
 void ray::set_child(ray *r)
 {
+	if (child == r) return;
 	if (child) delete child;
 	if (r)
 	{
@@ -115,12 +109,18 @@ bool ray::new_intersecting_object()
 		{
 			nearest = inter_info.first->distance(emitter);
 			nearest_object = tmp_opt;
-			nearest_pos =inter_info.first;
+			nearest_pos = inter_info.first;
 			part = inter_info.second;
 		}
+		else if (inter_info.first) delete inter_info.first;
 	}
 
-	if (nearest_object == intersection_object) return false;
+	bool f1 = nearest_object == intersection_object;
+	bool f2 = !(nearest_pos && intersection_point);
+	bool f3 = nearest_pos && intersection_point
+			&& (*nearest_pos == *intersection_point);
+	bool f4 = intersection_part == part;
+	if (f1 && f2 && f3 && f4) return false;
 
 	intersection_object = nearest_object;
 	intersection_point = nearest_pos;
@@ -139,7 +139,13 @@ QColor ray::get_color() const { return color; }
 QPen ray::get_pen() const {	return pen; }
 QPen ray::get_emitter_pen() const {	return emitter_pen; }
 QBrush ray::get_emitter_brush() const {	return emitter_brush; }
-void ray::set_color(QColor c) {	color = c; }
+
+void ray::set_color(QColor c)
+{
+	pen.setColor(color = c);
+	if (child) child->set_color(c);
+}
+
 void ray::set_pen(QPen p) {	pen = p; }
 void ray::set_emitter_brush(QBrush b) {	emitter_brush = b; }
 void ray::set_emitter_pen(QPen p) {	emitter_pen = p; }
