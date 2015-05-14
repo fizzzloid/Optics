@@ -41,6 +41,9 @@ void abstract_optics::setup_pen_and_brush()
 	brush.setStyle(Qt::SolidPattern);
 }
 
+void abstract_optics::set_pen_color(QColor c) { pen.setColor(c); }
+void abstract_optics::set_brush_color(QColor c) { brush.setColor(c); }
+
 void abstract_optics::move_to(qreal, qreal) {}
 void abstract_optics::move_by(qreal, qreal) {}
 void abstract_optics::rot_by(qreal) {}

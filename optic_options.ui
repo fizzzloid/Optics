@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>466</width>
+    <width>559</width>
     <height>356</height>
    </rect>
   </property>
@@ -329,7 +329,7 @@
              <double>1.000000000000000</double>
             </property>
             <property name="singleStep">
-             <double>0.010000000000000</double>
+             <double>0.050000000000000</double>
             </property>
             <property name="value">
              <double>1.000000000000000</double>
@@ -342,7 +342,7 @@
              <double>1.000000000000000</double>
             </property>
             <property name="singleStep">
-             <double>0.010000000000000</double>
+             <double>0.050000000000000</double>
             </property>
             <property name="value">
              <double>1.000000000000000</double>
@@ -361,6 +361,12 @@
               <height>40</height>
              </size>
             </property>
+            <property name="autoFillBackground">
+             <bool>true</bool>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::Box</enum>
+            </property>
             <property name="text">
              <string notr="true"/>
             </property>
@@ -373,6 +379,12 @@
               <width>40</width>
               <height>40</height>
              </size>
+            </property>
+            <property name="autoFillBackground">
+             <bool>true</bool>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::Box</enum>
             </property>
             <property name="frameShadow">
              <enum>QFrame::Plain</enum>
@@ -431,8 +443,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>376</x>
-     <y>244</y>
+     <x>548</x>
+     <y>254</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>

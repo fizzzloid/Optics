@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QSet>
 #include "ray_options.h"
+#include "optic_options.h"
 
 class ray;
 class abstract_optics;
@@ -100,6 +101,7 @@ class field : public QWidget
 		QSet<qint32> highlighted_optics;
 		QMenu *context_menu;
 		ray_options *ray_menu;
+		optic_options *optic_menu;
 		bool grid_visible;
 
 		static const qreal scale_base = 1.3;

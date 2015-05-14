@@ -17,7 +17,8 @@ field::field(QWidget *parent)
 	  scale(1000.0),
 	  index_of_refr(1.0),
 	  context_menu(0),
-	  ray_menu(0)
+	  ray_menu(0),
+	  optic_menu(0)
 {
 	background_color = Qt::black;
 	rays_color = Qt::red;
@@ -349,6 +350,9 @@ void field::select_ray(qint32 num)
 
 void field::select_optic(qint32 num)
 {
+	if (optic_menu) delete optic_menu;
+	optic_menu = new optic_options(num, this, this);
+	optic_menu->show();
 }
 
 void field::paintRay(qint32 num, QPainter *painter,

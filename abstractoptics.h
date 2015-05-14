@@ -26,6 +26,8 @@ class abstract_optics
 
 		virtual qreal get_distance_to_point(vector2D) const;
 		virtual void setup_pen_and_brush();
+		virtual void set_pen_color(QColor c);
+		virtual void set_brush_color(QColor c);
 
 		virtual void move_to(qreal, qreal);
 		virtual void move_by(qreal, qreal);

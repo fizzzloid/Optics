@@ -3,8 +3,10 @@
 #include "field.h"
 #include "abstractoptics.h"
 #include <QColorDialog>
-
-optic_options::optic_options(qint32 chg_opt_num, field *backg, QWidget *parent) :
+#include <QtMath>
+optic_options::optic_options(qint32 chg_opt_num,
+							 field *backg,
+							 QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::optic_options),
 	background(backg),
@@ -20,8 +22,8 @@ optic_options::optic_options(qint32 chg_opt_num, field *backg, QWidget *parent) 
 	qint32 l = initial_nodal_points.length();
 	initial_pos = vector2D(0,0);
 	for (qint32 i = 0; i < l; i++)
-		center += initial_nodal_points[i];
-	center /= l;
+		initial_pos += initial_nodal_points[i];
+	initial_pos /= l;
 
 	connect_angle();
 	connect_movement();
@@ -65,7 +67,7 @@ void optic_options::outline_color_click()
 	cd.exec();
 }
 
-void optic_options::material_color_changed(QColor c)
+void optic_options::material_color_click()
 {
 	QColorDialog cd(current_material_color, this);
 	connect(&cd, SIGNAL(colorSelected(QColor)),
@@ -74,9 +76,33 @@ void optic_options::material_color_changed(QColor c)
 	cd.exec();
 }
 
+void optic_options::outline_color_changed(QColor c)
+{
+	c.setAlphaF(ui->outline_opacity_spin->value());
+	set_outline_color(c);
+}
+
+void optic_options::outline_opacy_changed(double o)
+{
+	current_outline_color.setAlphaF(o);
+	set_outline_color(current_outline_color);
+}
+
+void optic_options::material_color_changed(QColor c)
+{
+	c.setAlphaF(ui->material_opacity_spin->value());
+	set_material_color(c);
+}
+
+void optic_options::material_opacy_changed(double o)
+{
+	current_material_color.setAlphaF(o);
+	set_material_color(current_material_color);
+}
+
 void optic_options::delete_btn_click()
 {
-	background->delete_optic(opt_num);
+	background->delete_optic(opt);
 	delete opt;
 	background->recalc();
 	background->update();
@@ -103,10 +129,30 @@ void optic_options::restore()
 
 void optic_options::set_material_color(QColor c)
 {
-	c.setAlphaF(ui->outline_opacity_spin->value());
-	////////////////////////////////////////////////
+	ui->material_opacity_spin->setValue(c.alphaF());
+	current_material_color = c;
+	QLabel *l = ui->material_color_preview;
+	QPalette p = l->palette();
+	c.setAlphaF(1);
+	p.setColor(l->backgroundRole(), c);
+	l->setPalette(p);
+	opt->set_brush_color(current_material_color);
+	background->update();
 }
-///////////////////////////////////////////////
+
+void optic_options::set_outline_color(QColor c)
+{
+	ui->outline_opacity_spin->setValue(c.alphaF());
+	current_outline_color = c;
+	QLabel *l = ui->outline_color_preview;
+	QPalette p = l->palette();
+	c.setAlphaF(1);
+	p.setColor(l->backgroundRole(), c);
+	l->setPalette(p);
+	opt->set_pen_color(current_outline_color);
+	background->update();
+}
+
 void optic_options::set_pos(qreal x, qreal y)
 {
 	ui->x_spin->blockSignals(true);
@@ -132,7 +178,7 @@ void optic_options::move_pos(qreal inc_x, qreal inc_y)
 	opt->move_by(inc_x, inc_y);
 }
 
-void optic_options::set_angle(qreal a)
+void optic_options::set_angle(qreal deg)
 {
 	ui->angle_dial->blockSignals(true);
 	ui->angle_spin->blockSignals(true);
@@ -144,8 +190,8 @@ void optic_options::set_angle(qreal a)
 	ui->angle_spin->blockSignals(false);
 
 	opt->set_angle(qDegreesToRadians(deg));
-	backgroung->recalc();
-	backgroung->update();
+	background->recalc();
+	background->update();
 }
 
 void optic_options::connect_angle()
@@ -153,7 +199,7 @@ void optic_options::connect_angle()
 	connect(ui->angle_dial, SIGNAL(valueChanged(int)),
 			this, SLOT(angle_dial_changed(int)));
 	connect(ui->angle_spin, SIGNAL(valueChanged(double)),
-			this, SLOT(angle_dial_changed(int)));
+			this, SLOT(angle_spin_changed(qreal)));
 	connect(ui->ccv_btn, SIGNAL(clicked(bool)),
 			ui->angle_spin, SLOT(stepUp()));
 	connect(ui->cv_btn, SIGNAL(clicked(bool)),
@@ -179,13 +225,13 @@ void optic_options::connect_movement()
 void optic_options::connect_colors()
 {
 	connect(ui->outline_color_btn, SIGNAL(clicked(bool)),
-			this, SLOT(outline_color_clock()));
+			this, SLOT(outline_color_click()));
 	connect(ui->outline_opacity_spin, SIGNAL(valueChanged(double)),
-			this, SLOT(outline_color_changed()));
+			this, SLOT(outline_opacy_changed(double)));
 	connect(ui->material_color_btn, SIGNAL(clicked(bool)),
-			this, SLOT(material_color_changed()));
+			this, SLOT(material_color_click()));
 	connect(ui->material_opacity_spin, SIGNAL(valueChanged(double)),
-			this, SLOT(material_color_changed()));
+			this, SLOT(material_opacy_changed(double)));
 }
 
 void optic_options::connect_buttons()

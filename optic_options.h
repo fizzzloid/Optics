@@ -17,7 +17,9 @@ class optic_options : public QDialog
 		Q_OBJECT
 
 	public:
-		explicit optic_options(qint32 chg_opt_num, field *backg, QWidget *parent = 0);
+		explicit optic_options(qint32 chg_opt_num,
+							   field *backg,
+							   QWidget *parent = 0);
 		~optic_options();
 
 	private slots:
@@ -31,7 +33,9 @@ class optic_options : public QDialog
 		void outline_color_click();
 		void material_color_click();
 		void outline_color_changed(QColor c);
+		void outline_opacy_changed(double o);
 		void material_color_changed(QColor c);
+		void material_opacy_changed(double o);
 		void delete_btn_click();
 		void reset();
 		void cancel();
@@ -42,7 +46,7 @@ class optic_options : public QDialog
 		void set_material_color(QColor c);
 		void set_pos(qreal x, qreal y);
 		void move_pos(qreal inc_x, qreal inc_y);
-		void set_angle(qreal a);
+		void set_angle(qreal deg);
 
 		void connect_angle();
 		void connect_movement();

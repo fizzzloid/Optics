@@ -454,6 +454,9 @@
           <property name="autoFillBackground">
            <bool>true</bool>
           </property>
+          <property name="frameShape">
+           <enum>QFrame::Box</enum>
+          </property>
           <property name="midLineWidth">
            <number>0</number>
           </property>
@@ -506,12 +509,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>180</x>
-     <y>303</y>
+     <x>232</x>
+     <y>333</y>
     </hint>
     <hint type="destinationlabel">
-     <x>262</x>
-     <y>304</y>
+     <x>291</x>
+     <y>339</y>
     </hint>
    </hints>
   </connection>
@@ -522,12 +525,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>189</x>
-     <y>266</y>
+     <x>232</x>
+     <y>299</y>
     </hint>
     <hint type="destinationlabel">
-     <x>263</x>
-     <y>262</y>
+     <x>291</x>
+     <y>305</y>
     </hint>
    </hints>
   </connection>
@@ -543,7 +546,7 @@
     </hint>
     <hint type="destinationlabel">
      <x>232</x>
-     <y>275</y>
+     <y>299</y>
     </hint>
    </hints>
   </connection>
@@ -554,12 +557,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>166</x>
-     <y>229</y>
+     <x>232</x>
+     <y>265</y>
     </hint>
     <hint type="destinationlabel">
-     <x>248</x>
-     <y>225</y>
+     <x>291</x>
+     <y>271</y>
     </hint>
    </hints>
   </connection>
@@ -570,12 +573,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>256</x>
-     <y>231</y>
+     <x>291</x>
+     <y>271</y>
     </hint>
     <hint type="destinationlabel">
-     <x>208</x>
-     <y>241</y>
+     <x>232</x>
+     <y>265</y>
     </hint>
    </hints>
   </connection>
@@ -592,6 +595,22 @@
     <hint type="destinationlabel">
      <x>345</x>
      <y>17</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>blue_spinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>blue_slider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>267</x>
+     <y>321</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>196</x>
+     <y>325</y>
     </hint>
    </hints>
   </connection>
