@@ -1,4 +1,4 @@
-# Geometric Optics Simulation
+# Ray-geometric Optics Simulation
 
 Forked from: https://github.com/fizzzloid/Optics
 
