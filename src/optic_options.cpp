@@ -189,7 +189,9 @@ void optic_options::set_angle(qreal deg)
 	ui->angle_dial->blockSignals(false);
 	ui->angle_spin->blockSignals(false);
 
-	opt->set_angle(qDegreesToRadians(deg));
+    //opt->set_angle(qDegreesToRadians(deg));
+    opt->set_angle(deg);
+
 	background->recalc();
 	background->update();
 }

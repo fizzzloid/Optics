@@ -7,6 +7,11 @@
 class abstract_optics;
 class field;
 
+namespace ray_prop {
+const qreal max_len = 1e3;
+const qreal min_intensity = 0.01;
+const qreal intensity_step = 0.01;
+}
 
 class ray
 {
@@ -55,10 +60,6 @@ class ray
 		void set_emitter_radius(qreal r);
 
 		qreal get_distance_to_point(vector2D p) const ;
-
-		const static qreal max_len = 1e3;
-		const static qreal min_intensity = 0.01;
-		const static qreal intensity_step = 0.01;
 
 	private:
 		void generate_outline();

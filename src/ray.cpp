@@ -7,6 +7,8 @@
 #include <QtMath>
 #include <QDebug>
 
+using namespace ray_prop;
+
 ray::ray(qreal xpos, qreal ypos, qreal dir, field *f, qreal intens)
 	: emitter(xpos, ypos),
 	  parent(0),
@@ -197,7 +199,7 @@ void ray::generate_outline()
 	if (intersection_point) path->lineTo(*intersection_point);
 	else
 	{
-		vector2D ray_end(dir_vector * ray::max_len + emitter);
+        vector2D ray_end(dir_vector * ray_prop::max_len + emitter);
 		path->lineTo(ray_end);
 	}
 }

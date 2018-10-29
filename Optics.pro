@@ -4,51 +4,52 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT       += core gui widgets
 
 TARGET = Optics
 TEMPLATE = app
 
+CONFIG += console
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    ray.cpp \
-    vector2D.cpp \
-    field.cpp \
-    abstractoptics.cpp \
-	mirror.cpp \
-    wall.cpp \
-    prism.cpp \
-    thin_lense.cpp \
-    common_functions.cpp \
-    sphere.cpp \
-    real_lense.cpp \
-    circle_mirror.cpp \
-    ray_options.cpp \
-    obj_selection_menu.cpp \
-    optic_options.cpp
+INCLUDEPATH += ./src c:/workspace/libraries/boost
 
-HEADERS  += mainwindow.h \
-    ray.h \
-	vector2D.h \
-    abstractoptics.h \
-    field.h \
-    optics.h \
-	mirror.h \
-    wall.h \
-    common_functions.h \
-    prism.h \
-    thin_lense.h \
-    lenses.h \
-    sphere.h \
-    real_lense.h \
-    circle_mirror.h \
-    ray_options.h \
-    obj_selection_menu.h \
-    optic_options.h
+SOURCES += src/main.cpp\
+    src/mainwindow.cpp \
+    src/ray.cpp \
+    src/vector2D.cpp \
+    src/field.cpp \
+    src/abstractoptics.cpp \
+    src/mirror.cpp \
+    src/wall.cpp \
+    src/prism.cpp \
+    src/thin_lense.cpp \
+    src/common_functions.cpp \
+    src/sphere.cpp \
+    src/real_lense.cpp \
+    src/circle_mirror.cpp \
+    src/ray_options.cpp \
+    src/obj_selection_menu.cpp \
+    src/optic_options.cpp
+
+HEADERS  += src/mainwindow.h \
+    src/ray.h \
+    src/vector2D.h \
+    src/abstractoptics.h \
+    src/field.h \
+    src/optics.h \
+    src/mirror.h \
+    src/wall.h \
+    src/common_functions.h \
+    src/prism.h \
+    src/thin_lense.h \
+    src/lenses.h \
+    src/sphere.h \
+    src/real_lense.h \
+    src/circle_mirror.h \
+    src/ray_options.h \
+    src/obj_selection_menu.h \
+    src/optic_options.h
 
 FORMS += \
-    ray_options.ui \
-    optic_options.ui
+    src/ray_options.ui \
+    src/optic_options.ui

@@ -4,17 +4,19 @@
 #include <abstractoptics.h>
 #include <vector2D.h>
 #include <QPair>
+
 class QString;
+
 class thin_lense : public abstract_optics
 {
 	public:
 		thin_lense(vector2D start, vector2D end, qreal dioptr, field *backg);
-		thin_lense(vector2D cntr, vector2D norm, qreal radius,
-				qreal dioptr, field *backg);
+        thin_lense(vector2D cntr, vector2D norm, qreal radius, qreal dioptr, field *backg);
 		~thin_lense();
 
 		QPair<vector2D *, qint32>intersection_with_ray(ray *r) const;
-		ray *generate_ray(ray *r);
+
+        ray *generate_ray(ray *r);
 
 		qreal get_distance_to_point(vector2D p) const;
 

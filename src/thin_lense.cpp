@@ -58,7 +58,7 @@ QPair<vector2D *, qint32> thin_lense::intersection_with_ray
 
 ray *thin_lense::generate_ray(ray *r)
 {
-	if (r->get_intensity() < ray::min_intensity) return 0;
+    if (r->get_intensity() < ray_prop::min_intensity) return 0;
 	if (r->get_intersection_object() != this) return 0;
 	vector2D cross = *r->get_intersection_point();
 
@@ -83,7 +83,7 @@ ray *thin_lense::generate_ray(ray *r)
 	qreal betta = qAtan(R*D - tan_alpha);
 
 	ray *new_ray = new ray(cross.x(), cross.y(), betta + angle,
-						   background, r->get_intensity() - ray::intensity_step);
+                           background, r->get_intensity() - ray_prop::intensity_step);
 	if ( normal.scalar_mult(d)
 		*normal.scalar_mult(new_ray->get_direction_vect()) < 0)
 			new_ray->set_direction(M_PI - betta);
@@ -94,7 +94,9 @@ ray *thin_lense::generate_ray(ray *r)
 }
 
 qreal thin_lense::get_distance_to_point(vector2D p) const
-{ return common_functions::dist_to_stratch(edge_a, edge_b, p); }
+{
+    return common_functions::dist_to_stratch(edge_a, edge_b, p);
+}
 
 
 void thin_lense::setup_pen_and_brush()
