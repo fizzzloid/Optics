@@ -60,7 +60,7 @@ QPair<vector2D *, qint32> circle_mirror::intersection_with_ray(ray *r) const
 
 ray *circle_mirror::generate_ray(ray *r)
 {
-	if (r->get_intensity() < ray::min_intensity) return 0;
+    if (r->get_intensity() < ray_prop::min_intensity) return 0;
 	if (r->get_intersection_object() != this) return 0;
 
 	vector2D cross = *r->get_intersection_point();
@@ -75,7 +75,7 @@ ray *circle_mirror::generate_ray(ray *r)
 
 	ray *new_ray = new ray(cross.x(), cross.y(), new_dir,
 						   background,
-						   r->get_intensity() - ray::intensity_step);
+                           r->get_intensity() - ray_prop::intensity_step);
 	r->set_child(new_ray);
 	return new_ray;
 }

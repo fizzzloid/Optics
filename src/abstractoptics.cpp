@@ -7,7 +7,7 @@
 #include <QtMath>
 #include <QString>
 
-abstract_optics::abstract_optics(field *backg)
+abstract_optics::abstract_optics(field *backg) : QObject()
 {
 	background = backg;
 	background->add_optic(this);
@@ -47,10 +47,15 @@ void abstract_optics::set_brush_color(QColor c) { brush.setColor(c); }
 void abstract_optics::move_to(qreal, qreal) {}
 void abstract_optics::move_by(qreal, qreal) {}
 void abstract_optics::rot_by(qreal) {}
-void abstract_optics::set_angle(qreal) {}
+void abstract_optics::set_angle(qreal a)
+{
+    auto dif = a - m_angle;
+    m_angle = a;
+    rot_by(dif);
+}
 void abstract_optics::set_nodal_points(QList<vector2D>) {}
 
-qreal abstract_optics::get_angle() const { return 0.0; }
+qreal abstract_optics::get_angle() const { return m_angle; }
 QList<vector2D> abstract_optics::get_nodal_points() const { return QList<vector2D>(); }
 
 QString abstract_optics::who_i_am() const
