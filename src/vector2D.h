@@ -14,6 +14,7 @@ public:
     qreal vect_mult(vector2D p) const;
     vector2D operator= (const vector2D &p);
     qreal angle() const;
+    void normalized();
 };
 
 #endif // vector2D_H

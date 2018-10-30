@@ -197,3 +197,12 @@ void real_lense::move_by(qreal x, qreal y)
 
     outline.translate(x,-y);
 }
+
+QString real_lense::get_position() const
+{
+    QString str;
+    str += "\n";
+    str += "edge_a: " + QString::number( edge_a.x() ) + ", " + QString::number( edge_a.y() ) + "\n";
+    str += "edge_b: " + QString::number( edge_b.x() ) + ", " + QString::number( edge_b.y() ) + "\n";
+    return str;
+}

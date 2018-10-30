@@ -9,6 +9,8 @@
 #include <QDebug>
 #include <QAction>
 #include <QMenu>
+#include <iostream>
+#include <eigen/dense>
 
 field::field(QWidget *parent)
     : QWidget(parent),
@@ -109,6 +111,56 @@ void field::recalc()
     qint32 l = rays.length();
     for (qint32 i = 0; i < l; i++)
         recalc_ray_num(i);
+
+    find_focalpoint();
+}
+
+void field::find_focalpoint()
+{
+    auto l = rays.length();
+    auto r1 = rays[0];
+    auto r2 = rays[l-1];
+    if (r1 == nullptr && r2 == nullptr)  return;
+    // find the child ray
+    auto d = 0;
+    while(r1 || d<10)
+    {
+        if (r1->get_child() == nullptr)  break;
+        r1 = r1->get_child();
+        ++d;
+    }
+    d = 0;
+    while(r2 || d<10)
+    {
+        if (r2->get_child() == nullptr)  break;
+        r2 = r2->get_child();
+        ++d;
+    }
+    auto p1 = r1->get_focalpoint();
+    auto v1 = r1->get_direction_vect();
+    auto p2 = r2->get_focalpoint();
+    auto v2 = r2->get_direction_vect();
+    Eigen::Matrix2f A;
+    Eigen::Vector2f b;
+    A << v1.x(), -v2.x(), v1.y(), -v2.y();
+    b << p2.x()  -p1.x(), p2.y() -p1.y();
+    auto x = A.colPivHouseholderQr().solve(b);
+    auto fp = p1 + v1 * x(0);
+    r1->set_focalpoint(fp);
+    r2->set_focalpoint(fp);
+    ray_path.push_back(fp);
+
+    // update the drawing - gui part
+    {
+        QPainterPath* q1 = r1->get_ref_path();
+        if (q1 == nullptr || q1->elementCount()<1)  return;
+        q1->setElementPositionAt(q1->elementCount()-1, fp.x(), fp.y());
+    }
+    {
+        QPainterPath* q1 = r2->get_ref_path();
+        if (q1 == nullptr || q1->elementCount()<1)  return;
+        q1->setElementPositionAt(q1->elementCount()-1, fp.x(), fp.y());
+    }
 }
 
 void field::recalc_ray_num(qint32 n)
@@ -259,51 +311,64 @@ void field::paintEvent(QPaintEvent *)
     for (qint32 i = 0; i < l; i++)
         paintRay(i, &painter, highlighted_rays.contains(i));
 
-
     // optics
     l = optics.length();
     for (qint32 i = 0; i < l; i++)
         paintOptic(i, &painter, highlighted_optics.contains(i));
 
+    QPen raypen;
+    raypen.setColor(Qt::darkRed);
+    painter.setPen(raypen);
+    for(int i = 1; i<ray_path.size(); ++i)
+    {
+        painter.drawLine(ray_path.at(i-1), ray_path.at(i));
+    }
 }
 
 void field::keyPressEvent(QKeyEvent *ke)
 {
     switch (ke->key())
     {
-    case Qt::Key_Up:
-        scaled_corner_turn(0, height() * turn_koeff);
-        update();
-        emit something_changed();
-        break;
+//    case Qt::Key_Up:
+//        scaled_corner_turn(0, height() * turn_koeff);
+//        update();
+//        emit something_changed();
+//        break;
 
-    case Qt::Key_Down:
-        scaled_corner_turn(0, -height() * turn_koeff);
-        update();
-        emit something_changed();
-        break;
-    case Qt::Key_Left:
-        scaled_corner_turn(-width() * turn_koeff, 0);
-        update();
-        emit something_changed();
-        break;
-    case Qt::Key_Right:
-        scaled_corner_turn(width() * turn_koeff, 0);
-        update();
-        emit something_changed();
-        break;
-
-    case Qt::Key_Equal:
-    case Qt::Key_Plus:
-        scale_turn(1.0);
-        update();
-        emit something_changed();
-        break;
-    case Qt::Key_Minus:
-        scale_turn(-1.0);
-        update();
-        emit something_changed();
-        break;
+//    case Qt::Key_Down:
+//        scaled_corner_turn(0, -height() * turn_koeff);
+//        update();
+//        emit something_changed();
+//        break;
+//    case Qt::Key_Left:
+//        scaled_corner_turn(-width() * turn_koeff, 0);
+//        update();
+//        emit something_changed();
+//        break;
+//    case Qt::Key_Right:
+//        scaled_corner_turn(width() * turn_koeff, 0);
+//        update();
+//        emit something_changed();
+//        break;
+//    case Qt::Key_Equal:
+//    case Qt::Key_Plus:
+//        ray_prop::focal_len += 0.5;
+//        recalc();
+//        update();
+//        emit something_changed();
+//        break;
+//    case Qt::Key_Minus:
+//        ray_prop::focal_len -= 0.5;
+//        recalc();
+//        update();
+//        emit something_changed();
+//        break;
+    case Qt::Key_Space:
+        // print out coordinates of the optics element and the scene
+        for(auto o : optics)
+        {
+            std::cout << o->who_i_am().toStdString() << ", " << o->get_position().toStdString() << std::endl;
+        }
 
     default:
         break;

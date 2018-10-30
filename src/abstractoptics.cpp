@@ -53,14 +53,29 @@ void abstract_optics::set_angle(qreal a)
     m_angle = a;
     rot_by(dif);
 }
-void abstract_optics::set_nodal_points(QList<vector2D>) {}
+void abstract_optics::set_nodal_points(QList<vector2D>)
+{
 
-qreal abstract_optics::get_angle() const { return m_angle; }
-QList<vector2D> abstract_optics::get_nodal_points() const { return QList<vector2D>(); }
+}
+
+qreal abstract_optics::get_angle() const
+{
+    return m_angle;
+}
+
+QList<vector2D> abstract_optics::get_nodal_points() const
+{
+    return QList<vector2D>();
+}
 
 QString abstract_optics::who_i_am() const
 {
-	return QString("abstract optics");
+    return QString("abstract optics");
+}
+
+QString abstract_optics::get_position() const
+{
+    return QString(".");
 }
 
 void abstract_optics::generate_outline() {}

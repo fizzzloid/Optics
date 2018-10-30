@@ -28,6 +28,7 @@ public:
 
     static const quint32 hatch_count = 15;
 
+    QString get_position() const;
 private:
     vector2D edge_a, edge_b, normal, tangent;
     qreal length;

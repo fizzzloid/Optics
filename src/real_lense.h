@@ -30,6 +30,8 @@ public:
 
     void move_by(qreal, qreal);
 
+    QString get_position() const;
+
 private:
     void generate_outline();
 

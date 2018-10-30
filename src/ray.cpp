@@ -7,6 +7,11 @@
 #include <QtMath>
 #include <QDebug>
 
+namespace ray_prop
+{
+    qreal focal_len = 450;//475;
+}
+
 using namespace ray_prop;
 
 ray::ray(qreal xpos, qreal ypos, qreal dir, field *f, qreal intens)
@@ -125,6 +130,19 @@ bool ray::new_intersecting_object()
 	bool f4 = intersection_part == part;
 	if (f1 && f2 && f3 && f4) return false;
 
+    if (nearest_pos != nullptr)
+    {
+        auto pos1 = emitter;
+        auto tmp = total_dist + pos1.distance(*nearest_pos);
+        auto len = ray_prop::focal_len - tmp;
+        if (len<0)
+        {
+            intersection_point = nullptr;
+            generate_outline();
+            return false;
+        }
+    }
+
 	intersection_object = nearest_object;
 	intersection_point = nearest_pos;
 	intersection_part = part;
@@ -205,17 +223,17 @@ void ray::generate_outline()
     if (intersection_point)
     {
         vector2D pos1 = path->currentPosition();
-        path->lineTo(*intersection_point);
         total_dist = total_dist + pos1.distance(*intersection_point);
+        path->lineTo(*intersection_point);
     }
 	else
 	{
-        //qDebug () << total_dist;
         auto len = ray_prop::focal_len - total_dist;
         if (len>0)
         {
             vector2D ray_end(dir_vector * len + emitter);
             path->lineTo(ray_end);
+            focalpoint = ray_end;
         }
 	}    
 }

@@ -11,7 +11,7 @@ namespace ray_prop {
 const qreal max_len = 1e3;
 const qreal min_intensity = 0.01;
 const qreal intensity_step = 0.01;
-const qreal focal_len = 800;
+extern qreal focal_len;
 }
 
 class ray
@@ -51,6 +51,10 @@ public:
     QPen get_emitter_pen() const;
     QBrush get_emitter_brush() const;
     QPainterPath get_path() const;
+    QPainterPath* get_ref_path() const
+    {
+        return path;
+    }
     qreal get_emitter_radius() const;
 
     void set_color(QColor c);
@@ -65,6 +69,15 @@ public:
     {
         total_dist = d;
     }
+    vector2D get_focalpoint() const
+    {
+        return focalpoint;
+    }
+
+    void set_focalpoint(vector2D pt)
+    {
+        focalpoint = pt;
+    }
 
 private:
     void generate_outline();
@@ -73,6 +86,7 @@ private:
     vector2D dir_vector;
     qreal direction;
     qreal intensity;
+    vector2D focalpoint;
 
     ray *parent = nullptr;
     ray *child = nullptr;
