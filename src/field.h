@@ -75,6 +75,8 @@ public:
 
     void show_grid(bool show);
 
+    void find_focalpoint();
+
 public slots:
     void paintEvent(QPaintEvent *);
     void keyPressEvent(QKeyEvent *ke);
@@ -104,6 +106,7 @@ private:
     bool highlight_changed();
     QList<ray *> rays;
     QList<abstract_optics *> optics;
+    QVector<QPointF> ray_path;
 
     QPointF corner;
     qint32 scale_step;

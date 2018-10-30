@@ -39,6 +39,7 @@ public:
     virtual QList<vector2D> get_nodal_points() const;
 
     virtual QString who_i_am() const;
+    virtual QString get_position() const;
 
 protected:
     field *background;

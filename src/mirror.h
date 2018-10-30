@@ -8,26 +8,33 @@ class QString;
 
 class mirror : public abstract_optics
 {
-	public:
-		mirror(vector2D start, vector2D end, bool orient,  field *backg);
-		~mirror();
+public:
+    mirror(vector2D start, vector2D end, bool orient,  field *backg);
+    ~mirror();
 
-		QPair<vector2D *, qint32> intersection_with_ray(ray *r) const;
-		ray *generate_ray(ray *r);
+    void update_pose();
 
-		qreal get_distance_to_point(vector2D p) const;
+    QPair<vector2D *, qint32> intersection_with_ray(ray *r) const;
 
-		QString who_i_am() const;
+    ray *generate_ray(ray *r);
 
-		static const quint32 hatch_count = 15;
+    qreal get_distance_to_point(vector2D p) const;
 
-	private:
-		vector2D edge_a, edge_b, normal, tangent;
-		qreal length;
+    QString who_i_am() const;
 
-		void generate_outline();
+    void rot_by(qreal a);
 
+    void move_by(qreal, qreal);
 
+    static const quint32 hatch_count = 15;
+
+    QString get_position() const;
+private:
+    vector2D edge_a, edge_b, normal, tangent;
+    qreal length;
+    bool m_orient;
+
+    void generate_outline();
 };
 
 #endif // MIRROR_H

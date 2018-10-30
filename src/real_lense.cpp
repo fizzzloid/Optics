@@ -31,14 +31,12 @@ void real_lense::update_pose()
 
     // Not 1/2. Because.
     if (2 * qFabs(radius1) >= length) R1 = radius1;
-    else if (radius1 >= 0) R1 = length * 0.500001;
+    else if (radius1 >= 0) R1 = length / 0.500001;
     else R1 = - length / 0.500001;
 
     if (2 * qFabs(radius2) >= length) R2 = radius2;
     else if (radius2 >= 0) R2 = length / 0.500001;
     else R2 = - length / 0.500001;
-
-
 
     tangent.setX(-normal.y());
     tangent.setY(normal.x());
@@ -198,4 +196,13 @@ void real_lense::move_by(qreal x, qreal y)
     update_pose();
 
     outline.translate(x,-y);
+}
+
+QString real_lense::get_position() const
+{
+    QString str;
+    str += "\n";
+    str += "edge_a: " + QString::number( edge_a.x() ) + ", " + QString::number( edge_a.y() ) + "\n";
+    str += "edge_b: " + QString::number( edge_b.x() ) + ", " + QString::number( edge_b.y() ) + "\n";
+    return str;
 }
