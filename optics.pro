@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets qml quick quickwidgets
+QT       += core gui widgets qml quick quickwidgets quickcontrols2
 
 TARGET = optics
 TEMPLATE = app

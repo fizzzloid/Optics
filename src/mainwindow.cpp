@@ -19,6 +19,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     setup_statusbar();
 
+//    auto font1 = font();
+//    QFontInfo fi(font1.defaultFamily());
+//    font1.setPixelSize(50);
+//    setFont(font1);
+
     connect(active_field, SIGNAL(something_changed()),
 			this, SLOT(status_changed()));
 

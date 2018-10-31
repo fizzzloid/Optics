@@ -45,11 +45,11 @@ public:
 
     void recalc_ray_num(qint32 n);
 
-    void scale_change(qint32 new_sc, QPointF *center = 0);
+    void scale_change(qreal new_sc, QPointF *center = 0);
 
     void corner_change(qreal x, qreal y);
 
-    void scale_turn(qint32 increment, QPointF *center = 0);
+    void scale_turn(qreal increment, QPointF *center = 0);
 
     void corner_turn(qreal incx, qreal incy);
 

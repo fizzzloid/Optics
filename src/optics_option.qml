@@ -48,58 +48,104 @@
 **
 ****************************************************************************/
 
-import QtQuick 2.2
-import QtQuick.Controls 1.2
+import QtQuick 2.0
+import QtQuick.Controls 2.2
 import QtQuick.Controls.Styles 1.4
+import QtQuick.Controls.Material 2.2
 import QtQuick.Layouts 1.3
 
 Rectangle {
     id: root
-    width: 300
+    width: 400
     height: 150
     color: "#00ffffff"
+    antialiasing: true
+
+    Material.theme: Material.Light
+    Material.accent: Material.Purple
 
     Text {
         id : t1
         x : 10
         y : 10
         text: "Focal-Length (f): "
-        font.pointSize: 12
+        font.family: "Calibri"
+        font.pixelSize: 18
+        font.italic: false
+        font.bold: false
+        smooth: false
     }
     Text {
         id : t2
         x : 10
         y : 40
         text: "Height (h): "
-        font.pointSize: 12
+        font.family: "Calibri"
+        smooth: false
+        enabled: true
+        font.pixelSize: 18
     }
     Text {
         id : t3
         x : 10
         y : 70
         text: "Distance (d3): "
-        font.pointSize: 12
+        font.family: "Calibri"
+        font.pixelSize: 18
     }
     Slider {
         id: sl1
-        x : 140; y : 15
+        x : 130; y : 7
         width: 150
-        style: touchStyle
+        height: 30
+        //style: touchStyle
         value: 0.5
+
+        Text {
+            id: text1
+            x: 156
+            y: 7
+            text: Number(sl1.value * 100).toFixed(1)  + " mm"
+            font.family: "Calibri"
+            textFormat: Text.PlainText
+            font.pixelSize: 16
+        }
     }
     Slider {
         id: sl2
-        x : 140; y : 45
+        x : 130; y : 39
         width: 150
-        style: touchStyle
+        height: 30
+        //style: touchStyle
         value: 0.5
+
+        Text {
+            id: text2
+            x: 156
+            y: 7
+            text: Number(sl2.value * 100).toFixed(1) + " mm"
+            font.family: "Calibri"
+            textFormat: Text.PlainText
+            font.pixelSize: 16
+        }
     }
     Slider {
         id: sl3
-        x : 140; y : 75
+        x : 130; y : 69
         width: 150
-        style: touchStyle
+        height: 30
+        //style: touchStyle
         value: 0.5
+
+        Text {
+            id: text3
+            x: 156
+            y: 7
+            text: Number(sl3.value * 100).toFixed(1) + " mm"
+            font.family: "Calibri"
+            textFormat: Text.PlainText
+            font.pixelSize: 16
+        }
     }
 
     // binding
@@ -123,4 +169,8 @@ Rectangle {
     }
 
     Component { id: touchStyle; SliderStyle {} }
+
+
+
+
 }

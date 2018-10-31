@@ -11,6 +11,7 @@
 #include <QQmlEngine>
 #include <QQmlContext>
 #include <iostream>
+#include <QQuickStyle>
 #include <eigen/dense>
 
 field::field(QWidget *parent)
@@ -37,6 +38,8 @@ field::field(QWidget *parent)
     mouse_inside = false;
 
     grid_visible = true;
+
+    QQuickStyle::setStyle("Material");
 
     optic_options* opt = new optic_options(this);
     opt->setGeometry(0, 0, 600, 200);
@@ -134,7 +137,7 @@ void field::recalc()
     for (qint32 i = 0; i < l; i++)
         recalc_ray_num(i);
 
-    find_focalpoint();
+    //find_focalpoint();
 }
 
 void field::find_focalpoint()
@@ -211,7 +214,7 @@ void field::recalc_ray_num(qint32 n)
     }
 }
 
-void field::scale_change(qint32 new_sc, QPointF *center)
+void field::scale_change(qreal new_sc, QPointF *center)
 {
     if ((new_sc < -50) || (new_sc > 50)) return;
 
@@ -223,7 +226,7 @@ void field::scale_change(qint32 new_sc, QPointF *center)
         center->setY(corner.y() + height() / (2 * scale));
     }
     scale_step = new_sc;
-    scale = 1*qPow(scale_base,((qreal) new_sc));
+    scale = 1*qPow(scale_base,((qreal) new_sc * 0.4));
 
     QPointF new_corner( *center
                         + (corner - *center) * old_sc / scale);
@@ -237,7 +240,7 @@ void field::corner_change(qreal x, qreal y)
     corner.setY(y);
 }
 
-void field::scale_turn(qint32 increment, QPointF *center)
+void field::scale_turn(qreal increment, QPointF *center)
 {
     scale_change(scale_step + increment, center);
 }
@@ -430,7 +433,8 @@ void field::wheelEvent(QWheelEvent *we)
     QPointF *center = new QPointF;
     center->setX(corner.x() + we->x() / scale);
     center->setY(corner.y() + (height() - we->y()) / scale);
-    scale_turn(0.01*we->delta(), center);
+    auto v = 0.01*we->delta();
+    scale_turn(v, center);
     update();
     emit something_changed();
 }
