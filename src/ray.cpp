@@ -9,7 +9,7 @@
 
 namespace ray_prop
 {
-    qreal focal_len = 450;//475;
+    qreal focal_len = 500;
 }
 
 using namespace ray_prop;

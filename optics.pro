@@ -4,14 +4,14 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets
+QT       += core gui widgets qml quick quickwidgets
 
-TARGET = Optics
+TARGET = optics
 TEMPLATE = app
 
 CONFIG += console
 
-INCLUDEPATH += ./src c:/workspace/libraries/boost c:/workspace/libraries/eigen
+INCLUDEPATH += ./src d:/workspace/libraries/boost d:/workspace/libraries/eigen
 
 SOURCES += \
     src/main.cpp\
@@ -28,7 +28,6 @@ SOURCES += \
     src/sphere.cpp \
     src/real_lense.cpp \
     src/circle_mirror.cpp \
-    src/ray_options.cpp \
     src/obj_selection_menu.cpp \
     src/optic_options.cpp \
     src/retroplane.cpp
@@ -48,11 +47,12 @@ HEADERS  += src/mainwindow.h \
     src/sphere.h \
     src/real_lense.h \
     src/circle_mirror.h \
-    src/ray_options.h \
     src/obj_selection_menu.h \
     src/optic_options.h \
     src/retroplane.h
 
-FORMS += \
-    src/ray_options.ui \
-    src/optic_options.ui
+DISTFILES += \
+    src/optics_option.qml
+
+RESOURCES += \
+    src/res.qrc

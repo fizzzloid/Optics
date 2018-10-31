@@ -82,7 +82,7 @@ void mirror::generate_outline()
 void mirror::rot_by(qreal a)
 {
     QTransform t;
-    auto center3 = (edge_a + edge_b)/2;
+    auto center3 = edge_b;//(edge_a + edge_b)/2;
     t.translate(center3.x(), center3.y());
     t.rotate(a);
     t.translate(-center3.x(), -center3.y());

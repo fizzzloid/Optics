@@ -1,7 +1,7 @@
 #ifndef OPTIC_OPTIONS_H
 #define OPTIC_OPTIONS_H
 
-#include <QDialog>
+#include <QQuickWidget>
 #include <QColor>
 #include <QList>
 #include "vector2D.h"
@@ -12,58 +12,59 @@ namespace Ui {
 class optic_options;
 }
 
-class optic_options : public QDialog
+class optic_options : public QQuickWidget
 {
-		Q_OBJECT
+    Q_OBJECT
+    Q_PROPERTY(qreal focallength READ focallength WRITE setFocallength)
+    Q_PROPERTY(qreal height READ height WRITE setHeight)
+    Q_PROPERTY(qreal distance3 READ distance3 WRITE setDistance3)
+public:
+    explicit optic_options(field *backg);
+    ~optic_options();
 
-	public:
-		explicit optic_options(qint32 chg_opt_num,
-							   field *backg,
-							   QWidget *parent = 0);
-		~optic_options();
+    void setFocallength(qreal v)
+    {
+        m_focallength = v;
+        emit sgnFocalLength(v);
+    }
 
-	private slots:
-		void angle_dial_changed(int deg);
-		void angle_spin_changed(qreal deg);
-		void up_btn_clicked();
-		void down_btn_clicked();
-		void left_btn_clicked();
-		void right_btn_clicked();
-		void pos_changed();
-		void outline_color_click();
-		void material_color_click();
-		void outline_color_changed(QColor c);
-		void outline_opacy_changed(double o);
-		void material_color_changed(QColor c);
-		void material_opacy_changed(double o);
-		void delete_btn_click();
-		void reset();
-		void cancel();
+    void setHeight(qreal h)
+    {
+        m_height = h;
+        emit sgnHeight(h);
+    }
 
-	private:
-		void restore();
-		void set_outline_color(QColor c);
-		void set_material_color(QColor c);
-		void set_pos(qreal x, qreal y);
-		void move_pos(qreal inc_x, qreal inc_y);
-		void set_angle(qreal deg);
+    void setDistance3(qreal d)
+    {
+        m_distance3 = d;
+        emit sgnDistance3(d);
+    }
 
-		void connect_angle();
-		void connect_movement();
-		void connect_colors();
-		void connect_buttons();
+    qreal height() const
+    {
+        return m_height;
+    }
 
-		Ui::optic_options *ui;
-		QColor initial_outline_color, current_outline_color;
-		QColor initial_material_color, current_material_color;
-		QList<vector2D> initial_nodal_points;
-		QList<vector2D> current_nodal_points;
-		vector2D initial_pos;
-		vector2D current_pos;
-		qreal initial_angle;
-		abstract_optics *opt;
-		field *background;
-		qint32 opt_num;
+    qreal focallength() const
+    {
+        return m_focallength;
+    }
+
+    qreal distance3() const
+    {
+        return m_distance3;
+    }
+
+signals:
+    void sgnDistance3(qreal);
+    void sgnHeight(qreal);
+    void sgnFocalLength(qreal);
+
+private:
+    field *background;
+    qreal m_focallength;
+    qreal m_distance3;
+    qreal m_height;
 };
 
 #endif // OPTIC_OPTIONS_H
