@@ -2,7 +2,6 @@
 #include "ray.h"
 #include "lenses.h"
 #include "obj_selection_menu.h"
-#include "ray_options.h"
 #include <QPainter>
 #include <QKeyEvent>
 #include <QtMath>
@@ -17,10 +16,7 @@ field::field(QWidget *parent)
       corner(0,0),
       scale_step(0),
       scale(1.0),
-      index_of_refr(1.0),
-      context_menu(0),
-      ray_menu(0),
-      optic_menu(0)
+      index_of_refr(1.0)
 {
     background_color = Qt::white;
 
@@ -39,6 +35,15 @@ field::field(QWidget *parent)
     mouse_inside = false;
 
     grid_visible = true;
+
+    optic_options* opt = new optic_options(this);
+    opt->setParent((QWidget*)this->parent());
+    opt->setGeometry(0, 0, 600, 200);
+    opt->setAttribute(Qt::WA_AlwaysStackOnTop, true);
+    opt->setClearColor(Qt::transparent);
+    opt->setAttribute(Qt::WA_TranslucentBackground, true);
+    opt->setSource(QUrl("qrc:/optics_option.qml"));
+    m_options = opt;
 
     emit something_changed();
 }
@@ -92,7 +97,6 @@ abstract_optics *field::get_optic_num(qint32 num) const
 
 void field::clear()
 {
-    if (context_menu) delete context_menu;
     for (quint32 i = rays.length(); i > 0; i--)
     {
         delete rays.first();
@@ -117,50 +121,53 @@ void field::recalc()
 
 void field::find_focalpoint()
 {
-    auto l = rays.length();
-    auto r1 = rays[0];
-    auto r2 = rays[l-1];
-    if (r1 == nullptr && r2 == nullptr)  return;
-    // find the child ray
-    auto d = 0;
-    while(r1 || d<10)
-    {
-        if (r1->get_child() == nullptr)  break;
-        r1 = r1->get_child();
-        ++d;
-    }
-    d = 0;
-    while(r2 || d<10)
-    {
-        if (r2->get_child() == nullptr)  break;
-        r2 = r2->get_child();
-        ++d;
-    }
-    auto p1 = r1->get_focalpoint();
-    auto v1 = r1->get_direction_vect();
-    auto p2 = r2->get_focalpoint();
-    auto v2 = r2->get_direction_vect();
-    Eigen::Matrix2f A;
-    Eigen::Vector2f b;
-    A << v1.x(), -v2.x(), v1.y(), -v2.y();
-    b << p2.x()  -p1.x(), p2.y() -p1.y();
-    auto x = A.colPivHouseholderQr().solve(b);
-    auto fp = p1 + v1 * x(0);
-    r1->set_focalpoint(fp);
-    r2->set_focalpoint(fp);
-    ray_path.push_back(fp);
-
-    // update the drawing - gui part
-    {
-        QPainterPath* q1 = r1->get_ref_path();
-        if (q1 == nullptr || q1->elementCount()<1)  return;
-        q1->setElementPositionAt(q1->elementCount()-1, fp.x(), fp.y());
-    }
-    {
-        QPainterPath* q1 = r2->get_ref_path();
-        if (q1 == nullptr || q1->elementCount()<1)  return;
-        q1->setElementPositionAt(q1->elementCount()-1, fp.x(), fp.y());
-    }
+//    auto l = rays.length();
+//    auto r1 = rays[0];
+//    auto r2 = rays[l-1];
+//    if (r1 == nullptr && r2 == nullptr)  return;
+//    // find the child ray
+//    auto d = 0;
+//    while(r1 || d<10)
+//    {
+//        if (r1->get_child() == nullptr)  break;
+//        r1 = r1->get_child();
+//        ++d;
+//    }
+//    d = 0;
+//    while(r2 || d<10)
+//    {
+//        if (r2->get_child() == nullptr)  break;
+//        r2 = r2->get_child();
+//        ++d;
+//    }
+//    auto p1 = r1->get_focalpoint();
+//    auto v1 = r1->get_direction_vect();
+//    auto p2 = r2->get_focalpoint();
+//    auto v2 = r2->get_direction_vect();
+//    Eigen::Matrix2f A;
+//    Eigen::Vector2f b;
+//    A << v1.x(), -v2.x(), v1.y(), -v2.y();
+//    b << p2.x()  -p1.x(), p2.y() -p1.y();
+//    auto x = A.colPivHouseholderQr().solve(b);
+//    auto fp = p1 + v1 * x(0);
+//    r1->set_focalpoint(fp);
+//    r2->set_focalpoint(fp);
+//    if (m_startcollect)
+//    {
+//        ray_path.push_back(fp);
+//    }
+//
+//    // update the drawing - gui part
+//    {
+//        QPainterPath* q1 = r1->get_ref_path();
+//        if (q1 == nullptr || q1->elementCount()<1)  return;
+//        q1->setElementPositionAt(q1->elementCount()-1, fp.x(), fp.y());
+//    }
+//    {
+//        QPainterPath* q1 = r2->get_ref_path();
+//        if (q1 == nullptr || q1->elementCount()<1)  return;
+//        q1->setElementPositionAt(q1->elementCount()-1, fp.x(), fp.y());
+//    }
 }
 
 void field::recalc_ray_num(qint32 n)
@@ -316,12 +323,15 @@ void field::paintEvent(QPaintEvent *)
     for (qint32 i = 0; i < l; i++)
         paintOptic(i, &painter, highlighted_optics.contains(i));
 
-    QPen raypen;
-    raypen.setColor(Qt::darkRed);
-    painter.setPen(raypen);
-    for(int i = 1; i<ray_path.size(); ++i)
+    if (m_startpaint)
     {
-        painter.drawLine(ray_path.at(i-1), ray_path.at(i));
+        QPen raypen;
+        raypen.setColor(Qt::darkRed);
+        painter.setPen(raypen);
+        for(int i = 1; i<ray_path.size(); ++i)
+        {
+            painter.drawLine(ray_path.at(i-1), ray_path.at(i));
+        }
     }
 }
 
@@ -345,24 +355,22 @@ void field::keyPressEvent(QKeyEvent *ke)
 //        update();
 //        emit something_changed();
 //        break;
-//    case Qt::Key_Right:
-//        scaled_corner_turn(width() * turn_koeff, 0);
-//        update();
-//        emit something_changed();
-//        break;
-//    case Qt::Key_Equal:
-//    case Qt::Key_Plus:
-//        ray_prop::focal_len += 0.5;
-//        recalc();
-//        update();
-//        emit something_changed();
-//        break;
-//    case Qt::Key_Minus:
-//        ray_prop::focal_len -= 0.5;
-//        recalc();
-//        update();
-//        emit something_changed();
-//        break;
+    case Qt::Key_1:
+        ray_path.clear();
+        recalc();
+        update();
+        emit something_changed();
+        break;
+    case Qt::Key_P:
+        m_startcollect = !m_startcollect;
+        recalc();
+        update();
+        emit something_changed();
+        break;
+    case Qt::Key_C:
+        m_startpaint = !m_startpaint;
+        update();
+        break;
     case Qt::Key_Space:
         // print out coordinates of the optics element and the scene
         for(auto o : optics)
@@ -457,33 +465,6 @@ void field::mouseReleaseEvent(QMouseEvent *)
     unsetCursor();
 }
 
-void field::contextMenuEvent(QContextMenuEvent *me)
-{
-    if (context_menu != nullptr)
-    {
-        delete context_menu;
-        context_menu = nullptr;
-    }
-
-    if (highlighted_rays.count() + highlighted_optics.count() > 0)
-    {
-        context_menu = new obj_selection_menu(highlighted_rays,
-                                              highlighted_optics,
-                                              this);
-        connect(context_menu, SIGNAL(mouse_on_ray(qint32)),
-                this, SLOT(highlight_ray(qint32)));
-        connect(context_menu, SIGNAL(mouse_on_optic(qint32)),
-                this, SLOT(highlight_optic(qint32)));
-        connect(context_menu, SIGNAL(ray_selected(qint32)),
-                this, SLOT(select_ray(qint32)));
-        connect(context_menu, SIGNAL(optic_selected(qint32)),
-                this, SLOT(select_optic(qint32)));
-
-        context_menu->move(me->globalPos());
-        context_menu->show();
-    }
-}
-
 void field::highlight_ray(qint32 num)
 {
     if (num < rays.length())
@@ -504,20 +485,6 @@ void field::highlight_optic(qint32 num)
         highlighted_optics.insert(num);
         update();
     }
-}
-
-void field::select_ray(qint32 num)
-{
-    if (ray_menu) delete ray_menu;
-    ray_menu = new ray_options(num, this, this);
-    ray_menu->show();
-}
-
-void field::select_optic(qint32 num)
-{
-    if (optic_menu) delete optic_menu;
-    optic_menu = new optic_options(num, this, this);
-    optic_menu->show();
 }
 
 void field::paintRay(qint32 num, QPainter *painter,
