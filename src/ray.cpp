@@ -7,6 +7,13 @@
 #include <QtMath>
 #include <QDebug>
 
+namespace ray_prop
+{
+    qreal focal_len = 500;
+}
+
+using namespace ray_prop;
+
 ray::ray(qreal xpos, qreal ypos, qreal dir, field *f, qreal intens)
 	: emitter(xpos, ypos),
 	  parent(0),
@@ -80,6 +87,7 @@ void ray::set_child(ray *r)
 	if (r)
 	{
 		r->parent = this;
+        r->set_total_distance(total_dist);
 		background->delete_ray(r);
 	}
 	child = r;
@@ -122,12 +130,26 @@ bool ray::new_intersecting_object()
 	bool f4 = intersection_part == part;
 	if (f1 && f2 && f3 && f4) return false;
 
+    if (nearest_pos != nullptr)
+    {
+        auto pos1 = emitter;
+        auto tmp = total_dist + pos1.distance(*nearest_pos);
+        auto len = ray_prop::focal_len - tmp;
+        if (len<0)
+        {
+            intersection_point = nullptr;
+            generate_outline();
+            return false;
+        }
+    }
+
 	intersection_object = nearest_object;
 	intersection_point = nearest_pos;
 	intersection_part = part;
 
 	generate_outline();
-	return true;
+
+    return true;
 }
 
 abstract_optics *ray::get_intersection_object() const { return intersection_object; }
@@ -193,11 +215,25 @@ void ray::generate_outline()
 {
 	if (path) delete path;
 	path = new QPainterPath;
+    if (parent == nullptr)
+    {
+        total_dist = 0;
+    }
 	path->moveTo(emitter);
-	if (intersection_point) path->lineTo(*intersection_point);
+    if (intersection_point)
+    {
+        vector2D pos1 = path->currentPosition();
+        total_dist = total_dist + pos1.distance(*intersection_point);
+        path->lineTo(*intersection_point);
+    }
 	else
 	{
-		vector2D ray_end(dir_vector * ray::max_len + emitter);
-		path->lineTo(ray_end);
-	}
+        auto len = ray_prop::focal_len - total_dist;
+        if (len>0)
+        {
+            vector2D ray_end(dir_vector * len + emitter);
+            path->lineTo(ray_end);
+            focalpoint = ray_end;
+        }
+	}    
 }

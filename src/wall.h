@@ -21,7 +21,7 @@ class wall : public abstract_optics
 
 		QString who_i_am() const;
 
-		static const qreal thickness = 0.005;
+        const qreal thickness = 0.005;
 	private:
 		void generate_outline();
 		vector2D edge_a, edge_b, tangent, normal;

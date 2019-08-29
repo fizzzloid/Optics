@@ -106,7 +106,7 @@ ray *common_functions::generate_prism_ray(vector2D cross,
 		dir = tangent * sin_betta + normal * cos_betta;
 	}
 	ray *new_ray = new ray(cross.x(), cross.y(), dir, backg,
-				   r->get_intensity() - ray::intensity_step);
+                   r->get_intensity() - ray_prop::intensity_step);
 	r->set_child(new_ray);
 	return new_ray;
 }

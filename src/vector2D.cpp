@@ -10,9 +10,17 @@ qreal vector2D::scalar_mult(vector2D p) const
 	return ( x()*p.x() + y() * p.y() );
 }
 
+void vector2D::normalized()
+{
+    auto l = length();
+    setX( x() / l );
+    setY( y() / l );
+}
 
 qreal vector2D::length() const
-{ return qSqrt( x()*x() + y() * y() ); }
+{
+    return qSqrt( x()*x() + y() * y() );
+}
 
 qreal vector2D::vect_mult(vector2D p) const
 {

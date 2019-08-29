@@ -5,6 +5,7 @@
 #include <QtMath>
 #include <QPair>
 #include <QDebug>
+
 prism::prism(QPolygonF p, qreal index_of_refraction, field *backg)
 	: abstract_optics(backg)
 {
@@ -43,7 +44,7 @@ QPair<vector2D *, qint32> prism::intersection_with_ray(ray *r) const
 
 ray *prism::generate_ray(ray *r)
 {
-	if (r->get_intensity() < ray::min_intensity) return 0;
+    if (r->get_intensity() < ray_prop::min_intensity) return 0;
 	if (r->get_intersection_object() != this) return 0;
 	vector2D cross = *r->get_intersection_point();
 	qint32 cross_num = r->get_intersection_part();
